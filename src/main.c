@@ -6,7 +6,7 @@
 /*   By: ilsadi <ilsadi@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/09 14:37:11 by ilsadi            #+#    #+#             */
-/*   Updated: 2025/10/21 19:00:18 by ilsadi           ###   ########.fr       */
+/*   Updated: 2025/10/27 16:29:26 by ilsadi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,9 +15,13 @@
 int	main(int ac, char **av)
 {
 	t_game	game;
+	int		x;
+	int		y;
 
 	(void)ac;
 	(void)av;
+	x = 0;
+	y = 0;
 	ft_bzero(&game, sizeof(t_game));
 	game.mlx = mlx_init();
 	if (!game.mlx)

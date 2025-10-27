@@ -6,7 +6,7 @@
 /*   By: ilsadi <ilsadi@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/09 15:13:26 by ilsadi            #+#    #+#             */
-/*   Updated: 2025/10/13 15:50:21 by ilsadi           ###   ########.fr       */
+/*   Updated: 2025/10/27 10:42:13 by ilsadi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,6 +21,10 @@ int	clean_everything(t_game *game)
 		mlx_destroy_display(game->mlx);
 		free(game->mlx);
 	}
+	free(game->tex.NO_wall);
+	free(game->tex.SO_wall);
+	free(game->tex.WE_wall);
+	free(game->tex.EA_wall);
 	exit(0);
 	return (0);
 }

@@ -6,7 +6,7 @@
 /*   By: ilsadi <ilsadi@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/07 13:15:35 by ilsadi            #+#    #+#             */
-/*   Updated: 2025/10/21 19:00:40 by ilsadi           ###   ########.fr       */
+/*   Updated: 2025/10/27 13:25:37 by ilsadi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,13 +44,14 @@ typedef struct s_textures
 	char	*WE_wall;
 	char	*EA_wall;
 	char	*SO_wall;
+	int		ceil;
+	int		floor;
 }	t_textures;
 
 
 typedef struct s_map
 {
 	char	**map;
-	char	*ceil;
 }	t_map;
 
 typedef struct s_game
