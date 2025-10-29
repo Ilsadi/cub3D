@@ -6,7 +6,7 @@
 /*   By: ilsadi <ilsadi@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/07 13:15:35 by ilsadi            #+#    #+#             */
-/*   Updated: 2025/10/29 14:16:52 by ilsadi           ###   ########.fr       */
+/*   Updated: 2025/10/29 18:47:13 by ilsadi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,12 +60,22 @@ typedef struct s_game
 	t_map		map;
 	t_img		img;
 	t_textures	tex;
+	t_img		img;
 	void		*win;
 	void		*mlx;
 	int			width;
 	int			height;
 	
 }	t_game;
+
+typedef struct s_img
+{
+	void	*img;
+	int		*addr;
+	int		pixel_bits;
+	int		size_line;
+	int		endian;
+}	t_img;
 
 // Handle_keys.c
 
@@ -81,7 +91,7 @@ void	put_pixel(t_img *image, int x, int y, int color);
 void	display_background(t_game *game);
 
 void	info_cub(t_game *game, char *filename);
-void	stock_map(t_game *game, int fd, char *line);
+void	stock_map(t_game *game, int fd, char *filename);
 void	get_map_size(t_game *game, char *filename);
 char	*skip_line(int fd);
 

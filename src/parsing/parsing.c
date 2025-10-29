@@ -6,7 +6,7 @@
 /*   By: ilsadi <ilsadi@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/07 13:14:12 by ilsadi            #+#    #+#             */
-/*   Updated: 2025/10/29 15:12:38 by ilsadi           ###   ########.fr       */
+/*   Updated: 2025/10/29 18:33:27 by ilsadi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -137,7 +137,7 @@ char	*skip_line(int fd)
 	while (line)
 	{
 		i = 0;
-		while (line[i] == ' ')
+		while (line[i] == ' ' || line[i] == '\t')
 			i++;
 		if (line[i] == '1')
 			return (line);
@@ -168,16 +168,23 @@ void	get_map_size(t_game *game, char *filename)
 	close(fd);
 }
 
-void	stock_map(t_game *game, int fd, char *line)
+void	stock_map(t_game *game, int fd, char *filename)
 {
-	int	i;
+	int		i;
+	char	*line;
 
 	i = 0;
-	if (line[i] == '1')
+	fd = open(filename, O_RDONLY);
+	if (fd < 0)
+		return ;
+	line = skip_line(fd);
+	if (!line)
+		return ;
+	game->map.map = malloc(sizeof(char *) * (game->map.map_size + 1));
+	if (!game->map.map)
+		return ;
+	while (line)
 	{
-		game->map.map = malloc(sizeof(char *) * (game->map.map_size + 1));
-		if (!game->map.map)
-			return ;
 		while (line)
 		{
 			line[ft_strcspn(line, "\n")] = '\0';
@@ -188,6 +195,7 @@ void	stock_map(t_game *game, int fd, char *line)
 		}
 		game->map.map[i] = NULL;
 	}
+	close(fd);
 }
 
 void	info_cub(t_game *game, char *filename)
@@ -198,8 +206,9 @@ void	info_cub(t_game *game, char *filename)
 	get_map_size(game, filename);
 	fd = open(filename, O_RDONLY);
 	if (fd < 0)
-		return ;
+	return ;
 	line = ft_get_next_line(fd);
+	stock_map(game, fd, filename);
 	if (!line)
 	{
 		close(fd);
@@ -208,7 +217,6 @@ void	info_cub(t_game *game, char *filename)
 	while (line)
 	{
 		tex_stock(game, line);
-		stock_map(game, fd, line);
 		free(line);
 		line = ft_get_next_line(fd);
 	}
