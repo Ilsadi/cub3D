@@ -6,7 +6,7 @@
 /*   By: ilsadi <ilsadi@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/07 13:14:12 by ilsadi            #+#    #+#             */
-/*   Updated: 2025/10/29 18:33:27 by ilsadi           ###   ########.fr       */
+/*   Updated: 2025/10/29 21:29:51 by ilsadi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -95,17 +95,6 @@ int	get_color(t_game *game, char *str)
 	color = (r << 16 | g << 8 | b);
 	return (mlx_get_color_value(game->mlx, color));
 }
-
-// static void	color_stock(t_game *game, char *line, int i, char flag)
-// {
-// 	i += 1;
-// 	while (line[i] == ' ' || line[i] == '\t')
-// 		i++;
-// 	if (flag == 'F')
-// 		game->tex.floor = get_color(game, line);
-// 	else if (flag == 'C')
-// 		game->tex.ceil = get_color(game, line);
-// }
 
 static void	tex_stock(t_game *game, char *line)
 {

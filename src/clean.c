@@ -6,7 +6,7 @@
 /*   By: ilsadi <ilsadi@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/09 15:13:26 by ilsadi            #+#    #+#             */
-/*   Updated: 2025/10/29 18:34:51 by ilsadi           ###   ########.fr       */
+/*   Updated: 2025/10/29 21:33:44 by ilsadi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,8 @@ int	clean_everything(t_game *game)
 {
 	if (game->win)
 		mlx_destroy_window(game->mlx, game->win);
+	if (game->img.img)
+		mlx_destroy_image(game->mlx, game->img.img);
 	if (game->mlx)
 	{
 		mlx_destroy_display(game->mlx);
@@ -29,3 +31,5 @@ int	clean_everything(t_game *game)
 	exit(0);
 	return (0);
 }
+
+

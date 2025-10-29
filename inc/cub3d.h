@@ -6,7 +6,7 @@
 /*   By: ilsadi <ilsadi@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/07 13:15:35 by ilsadi            #+#    #+#             */
-/*   Updated: 2025/10/29 18:47:13 by ilsadi           ###   ########.fr       */
+/*   Updated: 2025/10/29 19:10:44 by ilsadi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,13 +29,16 @@
 # include "../mlx/mlx.h"
 
 # define SIZE 64
-# define SCREEN_HEIGHT 1080
-# define SCREEN_WIDTH 1920
+# define HEIGHT 1080
+# define WIDTH 1920
 
 typedef struct s_img
 {
-	int	size_line;
-	int	*address;
+	void	*img;
+	int		*addr;
+	int		pixel_bits;
+	int		size_line;
+	int		endian;
 }	t_img;
 
 typedef struct s_textures
@@ -60,23 +63,12 @@ typedef struct s_game
 	t_map		map;
 	t_img		img;
 	t_textures	tex;
-	t_img		img;
 	void		*win;
 	void		*mlx;
 	int			width;
 	int			height;
 	
 }	t_game;
-
-typedef struct s_img
-{
-	void	*img;
-	int		*addr;
-	int		pixel_bits;
-	int		size_line;
-	int		endian;
-}	t_img;
-
 // Handle_keys.c
 
 int		handle_key(int keycode, t_game *game);
@@ -88,12 +80,14 @@ int		clean_everything(t_game *game);
 // init_game.c
 
 void	put_pixel(t_img *image, int x, int y, int color);
-void	display_background(t_game *game);
+void	init_background(t_game *game);
+
 
 void	info_cub(t_game *game, char *filename);
 void	stock_map(t_game *game, int fd, char *filename);
 void	get_map_size(t_game *game, char *filename);
 char	*skip_line(int fd);
+void	set_img(t_game *game);
 
 
 
