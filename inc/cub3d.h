@@ -6,7 +6,7 @@
 /*   By: ilsadi <ilsadi@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/07 13:15:35 by ilsadi            #+#    #+#             */
-/*   Updated: 2025/10/27 13:25:37 by ilsadi           ###   ########.fr       */
+/*   Updated: 2025/10/29 14:16:52 by ilsadi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,6 +52,7 @@ typedef struct s_textures
 typedef struct s_map
 {
 	char	**map;
+	int		map_size;
 }	t_map;
 
 typedef struct s_game
@@ -80,5 +81,11 @@ void	put_pixel(t_img *image, int x, int y, int color);
 void	display_background(t_game *game);
 
 void	info_cub(t_game *game, char *filename);
+void	stock_map(t_game *game, int fd, char *line);
+void	get_map_size(t_game *game, char *filename);
+char	*skip_line(int fd);
+
+
+
 
 #endif

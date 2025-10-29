@@ -6,7 +6,7 @@
 /*   By: ilsadi <ilsadi@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/07 13:14:12 by ilsadi            #+#    #+#             */
-/*   Updated: 2025/10/27 18:06:38 by ilsadi           ###   ########.fr       */
+/*   Updated: 2025/10/29 15:12:38 by ilsadi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,7 +48,7 @@ int	has_only_valid_chars(t_game *game)
 	return (1);
 }
 
-static void	parse_line(char *str, char **dest)
+static void	get_textures(char *str, char **dest)
 {
 	size_t	len;
 
@@ -96,16 +96,16 @@ int	get_color(t_game *game, char *str)
 	return (mlx_get_color_value(game->mlx, color));
 }
 
-static void	color_stock(t_game *game, char *line, int i, char flag)
-{
-	i += 1;
-	while (line[i] == ' ' || line[i] == '\t')
-		i++;
-	if (flag == 'F')
-		game->tex.floor = get_color(game, line);
-	else if (flag == 'C')
-		game->tex.ceil = get_color(game, line);
-}
+// static void	color_stock(t_game *game, char *line, int i, char flag)
+// {
+// 	i += 1;
+// 	while (line[i] == ' ' || line[i] == '\t')
+// 		i++;
+// 	if (flag == 'F')
+// 		game->tex.floor = get_color(game, line);
+// 	else if (flag == 'C')
+// 		game->tex.ceil = get_color(game, line);
+// }
 
 static void	tex_stock(t_game *game, char *line)
 {
@@ -115,20 +115,20 @@ static void	tex_stock(t_game *game, char *line)
 	while (line[i] == ' ' || line[i] == '\t')
 			i++;
 	if (line[i] == 'N' && line[i + 1] == 'O')
-		parse_line(line + i + 2, &game->tex.NO_wall);
+		get_textures(line + i + 2, &game->tex.NO_wall);
 	else if (line[i] == 'E' && line[i + 1] == 'A')
-		parse_line(line + i + 2, &game->tex.EA_wall);
+		get_textures(line + i + 2, &game->tex.EA_wall);
 	else if (line[i] == 'W' && line[i + 1] == 'E')
-		parse_line(line + i + 2, &game->tex.WE_wall);
+		get_textures(line + i + 2, &game->tex.WE_wall);
 	else if (line[i] == 'S' && line[i + 1] == 'O')
-		parse_line(line + i + 2, &game->tex.SO_wall);
-	else if (line[i] == 'F')
-		color_stock(game, line, i, 'F');
-	else if (line[i] == 'C')
-		color_stock(game, line, i, 'C');
+		get_textures(line + i + 2, &game->tex.SO_wall);
+	else if (line[i] == 'F' && line[i + 1] == ' ')
+		game->tex.floor = get_color(game, line + i + 2);
+	else if (line[i] == 'C' && line[i + 1] == ' ')
+		game->tex.ceil = get_color(game, line + i + 2);
 }
 
-char	*skip_line(int fd, t_game *game)
+char	*skip_line(int fd)
 {
 	char	*line;
 	int		i;
@@ -147,29 +147,47 @@ char	*skip_line(int fd, t_game *game)
 	return (NULL);
 }
 
-int	get_map_size(t_game *game, char *line, int fd)
+void	get_map_size(t_game *game, char *filename)
 {
-	int		i;
-	int		count;
 	char	*line;
+	int		fd;
 
-	i = 0;
-	count = 0;
-	line = skip_line(fd, game);
+	fd = open(filename, O_RDONLY);
+	if (fd < 0)
+		return ;
+	game->map.map_size = 0;
+	line = skip_line(fd);
 	if (!line)
-		return (NULL);
+		return ;
 	while (line)
 	{
-		count++;
+		game->map.map_size++;
 		free(line);
 		line = ft_get_next_line(fd);
 	}
-	return (count);
+	close(fd);
 }
 
-int	stock_map(t_game *game)
+void	stock_map(t_game *game, int fd, char *line)
 {
-	
+	int	i;
+
+	i = 0;
+	if (line[i] == '1')
+	{
+		game->map.map = malloc(sizeof(char *) * (game->map.map_size + 1));
+		if (!game->map.map)
+			return ;
+		while (line)
+		{
+			line[ft_strcspn(line, "\n")] = '\0';
+			game->map.map[i] = ft_strdup(line);
+			i++;
+			free(line);
+			line = ft_get_next_line(fd);
+		}
+		game->map.map[i] = NULL;
+	}
 }
 
 void	info_cub(t_game *game, char *filename)
@@ -177,6 +195,7 @@ void	info_cub(t_game *game, char *filename)
 	char	*line;
 	int		fd;
 
+	get_map_size(game, filename);
 	fd = open(filename, O_RDONLY);
 	if (fd < 0)
 		return ;
@@ -189,6 +208,7 @@ void	info_cub(t_game *game, char *filename)
 	while (line)
 	{
 		tex_stock(game, line);
+		stock_map(game, fd, line);
 		free(line);
 		line = ft_get_next_line(fd);
 	}
