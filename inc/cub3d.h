@@ -6,7 +6,7 @@
 /*   By: ilsadi <ilsadi@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/07 13:15:35 by ilsadi            #+#    #+#             */
-/*   Updated: 2025/10/29 19:10:44 by ilsadi           ###   ########.fr       */
+/*   Updated: 2025/10/30 16:35:23 by ilsadi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,6 +41,21 @@ typedef struct s_img
 	int		endian;
 }	t_img;
 
+typedef	struct s_raycast
+{
+	double	dir_x;
+	double	dir_y;
+	double	ray_dir_x;
+	double	ray_dir_y;
+	double	plane_x;
+	double	plane_y;
+	double	delta_dist_x;
+	double	delta_dist_y;
+	int		map_x;
+	int		map_y;
+}	t_raycast;
+
+
 typedef struct s_textures
 {
 	char	*NO_wall;
@@ -63,10 +78,14 @@ typedef struct s_game
 	t_map		map;
 	t_img		img;
 	t_textures	tex;
+	t_raycast	ray;
 	void		*win;
 	void		*mlx;
 	int			width;
 	int			height;
+	float		player_x;
+	float		player_y;
+	float		angle;
 	
 }	t_game;
 // Handle_keys.c
