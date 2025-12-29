@@ -9,6 +9,9 @@ SRC	     =		src/main.c	 \
 				src/handle_keys.c \
 				src/init_game.c \
 				src/parsing/parsing.c \
+				src/parsing/cub_config.c \
+				src/parsing/parse_utils.c \
+				src/parsing/color.c
 
 
 CC       =	    cc
@@ -51,7 +54,7 @@ libft/libft.a:
 	@$(MAKE) -C libft --no-print-directory
 
 $(NAME):        $(OBJ) $(LIBFT) $(MLX_LIB)
-				@$(CC) $(CFLAGS) $(OBJ) $(LIBFT) $(MLX_LIB) $(MLX_FLAGS) -o $@ -lreadline
+				@$(CC) $(CFLAGS) $(OBJ) $(LIBFT) $(MLX_LIB) $(MLX_FLAGS) -o $@
 
 clean:
 				@rm -rf $(OBJ_DIR)

@@ -6,7 +6,7 @@
 /*   By: ilsadi <ilsadi@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/13 17:12:23 by ilsadi            #+#    #+#             */
-/*   Updated: 2025/10/30 16:50:41 by ilsadi           ###   ########.fr       */
+/*   Updated: 2025/12/29 01:20:10 by ilsadi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,61 +65,61 @@ void	init_background(t_game *game)
 	}
 }
 
-void	find_player_position(t_game *game)
-{
-	int	i;
-	int	j;
+// void	find_player_position(t_game *game)
+// {
+// 	int	i;
+// 	int	j;
 
-	i = 0;
-	while (i < game->map.map_size)
-	{
-		j = 0;
-		while (j < ft_strlen(game->map.map[i]))
-		{
-			if (game->map.map[i][j] == 'N' || game->map.map[i][j] == 'S' ||
-				game->map.map[i][j] == 'E' || game->map.map[i][j] == 'W')
-			{
-				game->player_x = j + 0.5;
-				game->player_y = i + 0.5;
-				game->map.map[i][j] = '0';
-			}
-			j++;
-		}
-		i++;
-	}
-}
+// 	i = 0;
+// 	while (i < game->map.map_size)
+// 	{
+// 		j = 0;
+// 		while (j < (int)ft_strlen(game->map.map[i]))
+// 		{
+// 			if (game->map.map[i][j] == 'N' || game->map.map[i][j] == 'S' ||
+// 				game->map.map[i][j] == 'E' || game->map.map[i][j] == 'W')
+// 			{
+// 				game->player_x = j + 0.5;
+// 				game->player_y = i + 0.5;
+// 				game->map.map[i][j] = '0';
+// 			}
+// 			j++;
+// 		}
+// 		i++;
+// 	}
+// }
 
-void	find_angle(t_game *game, int i, int j)
-{
-	if (game->map.map[i][j] == 'N')
-		game->angle = M_PI / 2;
-	else if (game->map.map[i][j] == 'S')
-		game->angle = 3 * M_PI / 2;
-	else if (game->map.map[i][j] == 'E')
-		game->angle = 0;
-	else if (game->map.map[i][j] == 'W')
-		game->angle = M_PI;
-}
+// void	find_angle(t_game *game, int i, int j)
+// {
+// 	if (game->map.map[i][j] == 'N')
+// 		game->angle = M_PI / 2;
+// 	else if (game->map.map[i][j] == 'S')
+// 		game->angle = 3 * M_PI / 2;
+// 	else if (game->map.map[i][j] == 'E')
+// 		game->angle = 0;
+// 	else if (game->map.map[i][j] == 'W')
+// 		game->angle = M_PI;
+// }
 
-void	init_pov(t_game *game)
-{
-	game->ray.dir_x = cos(game->angle);
-	game->ray.dir_y = -sin(game->angle);
-	game->ray.plane_x = sin(game->angle) * 0.66;
-	game->ray.plane_y = cos(game->angle) * 0.66;
-}
+// void	init_pov(t_game *game)
+// {
+// 	game->ray.dir_x = cos(game->angle);
+// 	game->ray.dir_y = -sin(game->angle);
+// 	game->ray.plane_x = sin(game->angle) * 0.66;
+// 	game->ray.plane_y = cos(game->angle) * 0.66;
+// }
 
-void	init_raycast(t_raycast *ray, t_game *game, int x)
-{
-	double	camera_x;
+// void	init_raycast(t_raycast *ray, t_game *game, int x)
+// {
+// 	double	camera_x;
 	
-	camera_x = 2 * x / (double)WIDTH - 1;
-	ray->ray_dir_x = ray->dir_x + ray->plane_x
-		* camera_x;
-	ray->ray_dir_y = ray->dir_y + ray->plane_y
-		* camera_x;
-	ray->map_x = game->player_x;
-	ray->map_y = game->player_y;
-	ray->delta_dist_x = fabs(1 / ray->ray_dir_x);
-	ray->delta_dist_y = fabs(1 / ray->ray_dir_y);
-}
+// 	camera_x = 2 * x / (double)WIDTH - 1;
+// 	ray->ray_dir_x = ray->dir_x + ray->plane_x
+// 		* camera_x;
+// 	ray->ray_dir_y = ray->dir_y + ray->plane_y
+// 		* camera_x;
+// 	ray->map_x = game->player_x;
+// 	ray->map_y = game->player_y;
+// 	ray->delta_dist_x = fabs(1 / ray->ray_dir_x);
+// 	ray->delta_dist_y = fabs(1 / ray->ray_dir_y);
+// }

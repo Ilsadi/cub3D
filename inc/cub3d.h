@@ -6,7 +6,7 @@
 /*   By: ilsadi <ilsadi@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/07 13:15:35 by ilsadi            #+#    #+#             */
-/*   Updated: 2025/10/30 16:35:23 by ilsadi           ###   ########.fr       */
+/*   Updated: 2025/12/29 01:20:10 by ilsadi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,6 +64,8 @@ typedef struct s_textures
 	char	*SO_wall;
 	int		ceil;
 	int		floor;
+	int		floor_set;
+	int		ceil_set;
 }	t_textures;
 
 
@@ -96,16 +98,35 @@ int		handle_key(int keycode, t_game *game);
 
 int		clean_everything(t_game *game);
 
-// init_game.c
-
-void	put_pixel(t_img *image, int x, int y, int color);
-void	init_background(t_game *game);
-
+// Parsing functions
 
 void	info_cub(t_game *game, char *filename);
 void	stock_map(t_game *game, int fd, char *filename);
 void	get_map_size(t_game *game, char *filename);
 char	*skip_line(int fd);
+int		has_only_valid_chars(t_game *game);
+
+// Parse utils
+
+int		error(char *error_msg);
+void	skip_whitespace(char **str);
+int		is_map_line(char *line);
+int		is_blank_line(char *line);
+int		has_cub_extension(char *filename);
+
+// Cub config
+
+int		parse_identifiers(char **lines, int *i, t_game *game);
+int		tex_stock(t_game *game, char *line);
+
+// Color
+
+int		get_color(t_game *game, char *str);
+
+// init_game.c
+
+void	put_pixel(t_img *image, int x, int y, int color);
+void	init_background(t_game *game);
 void	set_img(t_game *game);
 
 
