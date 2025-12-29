@@ -6,7 +6,7 @@
 /*   By: ilsadi <ilsadi@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/09 15:13:26 by ilsadi            #+#    #+#             */
-/*   Updated: 2025/10/29 21:33:44 by ilsadi           ###   ########.fr       */
+/*   Updated: 2025/12/29 09:04:36 by ilsadi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,8 @@ int	clean_everything(t_game *game)
 	free(game->tex.SO_wall);
 	free(game->tex.WE_wall);
 	free(game->tex.EA_wall);
-	ft_free_tab(game->map.map);
+	if (game->map.map)
+		ft_free_tab(game->map.map);
 	exit(0);
 	return (0);
 }

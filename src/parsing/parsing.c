@@ -6,7 +6,7 @@
 /*   By: ilsadi <ilsadi@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/07 13:14:12 by ilsadi            #+#    #+#             */
-/*   Updated: 2025/12/29 01:14:29 by ilsadi           ###   ########.fr       */
+/*   Updated: 2025/12/29 09:25:40 by ilsadi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -161,4 +161,29 @@ void	info_cub(t_game *game, char *filename)
 	}
 	get_map_size(game, filename);
 	stock_map(game, -1, filename);
+}
+
+
+int only_one_player(t_game *game)
+{
+	int	x;
+	int	y;
+	int	player;
+
+	x = 0;
+	player = 0;
+	while (game->map.map[x])
+	{
+		y = 0;
+		while(game->map.map[x][y])
+		{
+			if (game->map.map[x][y] == 'N' || game->map.map[x][y] == 'S' || game->map.map[x][y] == 'E' || game->map.map[x][y] == 'W')
+				player++;
+			y++;
+		}
+		x++;
+	}
+	if (player == 1)
+		return (1);
+	return (0);
 }

@@ -6,7 +6,7 @@
 /*   By: ilsadi <ilsadi@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/13 17:12:23 by ilsadi            #+#    #+#             */
-/*   Updated: 2025/12/29 01:20:10 by ilsadi           ###   ########.fr       */
+/*   Updated: 2025/12/29 09:08:50 by ilsadi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,9 +43,9 @@ void	init_background(t_game *game)
 	int	y;
 	int	color;
 
-	color = game->tex.ceil;
-	if (!color)
+	if (game->tex.ceil_set == 0 || game->tex.floor == 0)
 		clean_everything(game);
+	color = game->tex.ceil; 
 	y = 0;
 	while (y < HEIGHT)
 	{
