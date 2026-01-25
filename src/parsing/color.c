@@ -6,7 +6,7 @@
 /*   By: ilsadi <ilsadi@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/29 00:50:03 by ilsadi            #+#    #+#             */
-/*   Updated: 2025/12/29 01:20:10 by ilsadi           ###   ########.fr       */
+/*   Updated: 2026/01/23 16:16:15 by ilsadi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,32 +33,38 @@ static int parse_rgb_value(char **str, int *out)
 	return (0);
 }
 
+static int	parse_rgb_triple(char *str, int *r, int *g, int *b)
+{
+	if (!parse_rgb_value(&str, r))
+		return (0);
+	skip_whitespace(&str);
+	if (*str != ',')
+		return (0);
+	str++;
+	if (!parse_rgb_value(&str, g))
+		return (0);
+	skip_whitespace(&str);
+	if (*str != ',')
+		return (0);
+	str++;
+	if (!parse_rgb_value(&str, b))
+		return (0);
+	skip_whitespace(&str);
+	if (*str != '\0' && *str != '\n')
+		return (0);
+	return (1);
+}
+
 int	get_color(t_game *game, char *str)
 {
 	int		r;
 	int		g;
 	int		b;
-	int		color;
 
+	(void)game;
 	if (!str)
 		return (-1);
-	if (!parse_rgb_value(&str, &r))
+	if (!parse_rgb_triple(str, &r, &g, &b))
 		return (-1);
-	skip_whitespace(&str);
-	if (*str != ',')
-		return (-1);
-	str++;
-	if (!parse_rgb_value(&str, &g))
-		return (-1);
-	skip_whitespace(&str);
-	if (*str != ',')
-		return (-1);
-	str++;
-	if (!parse_rgb_value(&str, &b))
-		return (-1);
-	skip_whitespace(&str);
-	if (*str != '\0' && *str != '\n')
-		return (-1);
-	color = (r << 16 | g << 8 | b);
-	return (mlx_get_color_value(game->mlx, color));
+	return (r << 16 | g << 8 | b);
 }

@@ -43,7 +43,7 @@ void	init_background(t_game *game)
 	int	y;
 	int	color;
 
-	if (game->tex.ceil_set == 0 || game->tex.floor == 0)
+	if (game->tex.ceil_set == 0 || game->tex.floor_set == 0)
 		clean_everything(game);
 	color = game->tex.ceil; 
 	y = 0;
@@ -53,8 +53,6 @@ void	init_background(t_game *game)
 		if (y > HEIGHT / 2)
 		{
 			color = game->tex.floor;
-			if (!color)
-				clean_everything(game);
 		}
 		while (x < WIDTH)
 		{

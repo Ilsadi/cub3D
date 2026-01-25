@@ -6,7 +6,7 @@
 /*   By: ilsadi <ilsadi@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/07 13:15:35 by ilsadi            #+#    #+#             */
-/*   Updated: 2025/12/29 01:20:10 by ilsadi           ###   ########.fr       */
+/*   Updated: 2026/01/23 01:10:58 by ilsadi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -73,6 +73,8 @@ typedef struct s_map
 {
 	char	**map;
 	int		map_size;
+	int		height;
+	int		width;
 }	t_map;
 
 typedef struct s_game
@@ -100,11 +102,15 @@ int		clean_everything(t_game *game);
 
 // Parsing functions
 
-void	info_cub(t_game *game, char *filename);
+int		info_cub(t_game *game, char *filename);
 void	stock_map(t_game *game, int fd, char *filename);
-void	get_map_size(t_game *game, char *filename);
+int		get_map_size(t_game *game, char *filename);
 char	*skip_line(int fd);
 int		has_only_valid_chars(t_game *game);
+void	compute_map_dims(t_game *game);
+int		normalize_map(t_game *game);
+int		parse_player(t_game *game);
+int		check_map_closed(t_game *game);
 
 // Parse utils
 

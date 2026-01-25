@@ -29,25 +29,13 @@ void skip_whitespace(char **str)
 int is_map_line(char *line)
 {
 	int	i;
-	int	has_tile;
 
 	i = 0;
-	has_tile = 0;
-	while (line[i] && line[i] != '\n')
-	{
-		if (line[i] == ' ' || line[i] == '\t')
-			i++;
-		else if (line[i] == 'N' || line[i] == 'W' || line[i] == 'S' || line[i] == 'E' || line[i] == '1' || line[i] == '0')
-		{
-			has_tile = 1;
-			i++;
-		}
-		else
-			return (0);
-	}
-	if (!has_tile)
-		return (0);
-	return (1);
+	while (line[i] == ' ' || line[i] == '\t')
+		i++;
+	if (line[i] == '1')
+		return (1);
+	return (0);
 }
 
 int	is_blank_line(char *line)
