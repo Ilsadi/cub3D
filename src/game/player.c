@@ -6,7 +6,7 @@
 /*   By: amacaull <amacaull@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/27 12:43:13 by amacaull          #+#    #+#             */
-/*   Updated: 2026/01/28 10:14:24 by amacaull         ###   ########.fr       */
+/*   Updated: 2026/01/28 15:47:35 by amacaull         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,24 +23,49 @@ void	init_player_direction(t_game *game)
 	game->ray.plane_y = cos(angle) * 0.66;
 }
 
+static int	is_wall(t_game *game, double x, double y)
+{
+	int	map_x;
+	int	map_y;
+
+	map_x = (int)x;
+	map_y = (int)y;
+	if (map_x < 0 || map_x >= game->map.width
+		|| map_y < 0 || map_y >= game->map.height)
+		return (1);
+	if (game->map.grid[map_y][map_x] == '1')
+		return (1);
+	return (0);
+}
+
 static void	move_forward_backward(t_game *game, double move_speed)
 {
 	double	new_x;
 	double	new_y;
+	double	margin;
 
+	margin = 0.2;
 	if (game->player.move_forward)
 	{
 		new_x = game->player.x + game->ray.dir_x * move_speed;
 		new_y = game->player.y + game->ray.dir_y * move_speed;
-		game->player.x = new_x;
-		game->player.y = new_y;
+		if (!is_wall(game, new_x + margin * (game->ray.dir_x > 0 ? 1 : -1),
+				game->player.y))
+			game->player.x = new_x;
+		if (!is_wall(game, game->player.x,
+				new_y + margin * (game->ray.dir_y > 0 ? 1 : -1)))
+			game->player.y = new_y;
 	}
 	if (game->player.move_backward)
 	{
 		new_x = game->player.x - game->ray.dir_x * move_speed;
 		new_y = game->player.y - game->ray.dir_y * move_speed;
-		game->player.x = new_x;
-		game->player.y = new_y;
+		if (!is_wall(game, new_x - margin * (game->ray.dir_x > 0 ? 1 : -1),
+				game->player.y))
+			game->player.x = new_x;
+		if (!is_wall(game, game->player.x,
+				new_y - margin * (game->ray.dir_y > 0 ? 1 : -1)))
+			game->player.y = new_y;
 	}
 }
 
@@ -48,20 +73,30 @@ static void	move_strafe(t_game *game, double move_speed)
 {
 	double	new_x;
 	double	new_y;
+	double	margin;
 
+	margin = 0.2;
 	if (game->player.move_left)
 	{
 		new_x = game->player.x - game->ray.plane_x * move_speed;
 		new_y = game->player.y - game->ray.plane_y * move_speed;
-		game->player.x = new_x;
-		game->player.y = new_y;
+		if (!is_wall(game, new_x - margin * (game->ray.plane_x > 0 ? 1 : -1),
+				game->player.y))
+			game->player.x = new_x;
+		if (!is_wall(game, game->player.x,
+				new_y - margin * (game->ray.plane_y > 0 ? 1 : -1)))
+			game->player.y = new_y;
 	}
 	if (game->player.move_right)
 	{
 		new_x = game->player.x + game->ray.plane_x * move_speed;
 		new_y = game->player.y + game->ray.plane_y * move_speed;
-		game->player.x = new_x;
-		game->player.y = new_y;
+		if (!is_wall(game, new_x + margin * (game->ray.plane_x > 0 ? 1 : -1),
+				game->player.y))
+			game->player.x = new_x;
+		if (!is_wall(game, game->player.x,
+				new_y + margin * (game->ray.plane_y > 0 ? 1 : -1)))
+			game->player.y = new_y;
 	}
 }
 
