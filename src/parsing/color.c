@@ -3,18 +3,18 @@
 /*                                                        :::      ::::::::   */
 /*   color.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ilsadi <ilsadi@student.42.fr>              +#+  +:+       +#+        */
+/*   By: amacaull <amacaull@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/29 00:50:03 by ilsadi            #+#    #+#             */
-/*   Updated: 2026/01/23 16:16:15 by ilsadi           ###   ########.fr       */
+/*   Updated: 2026/01/28 15:24:07 by amacaull         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "cub3d.h"
 
-static int parse_rgb_value(char **str, int *out)
+static int	parse_rgb_value(char **str, int *out)
 {
-	int value;
+	int	value;
 
 	value = 0;
 	skip_whitespace(str);
@@ -25,12 +25,10 @@ static int parse_rgb_value(char **str, int *out)
 		value = value * 10 + (**str - '0');
 		(*str)++;
 	}
-	if (value <= 255)
-	{
-		*out = value;
-		return (1);
-	}
-	return (0);
+	if (value > 255)
+		return (0);
+	*out = value;
+	return (1);
 }
 
 static int	parse_rgb_triple(char *str, int *r, int *g, int *b)
@@ -55,16 +53,16 @@ static int	parse_rgb_triple(char *str, int *r, int *g, int *b)
 	return (1);
 }
 
-int	get_color(t_game *game, char *str)
+int	parse_rgb(t_game *game, char *str)
 {
-	int		r;
-	int		g;
-	int		b;
+	int	r;
+	int	g;
+	int	b;
 
 	(void)game;
 	if (!str)
 		return (-1);
 	if (!parse_rgb_triple(str, &r, &g, &b))
 		return (-1);
-	return (r << 16 | g << 8 | b);
+	return ((r << 16) | (g << 8) | b);
 }

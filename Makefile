@@ -3,82 +3,66 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: ilsadi <ilsadi@student.42.fr>              +#+  +:+       +#+         #
+#    By: amacaull <amacaull@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2026/01/22 22:35:31 by ilsadi            #+#    #+#              #
-#    Updated: 2026/01/22 22:35:32 by ilsadi           ###   ########.fr        #
+#    Updated: 2026/01/28 10:13:26 by amacaull         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
-NAME     =	cub3d
+NAME		= cub3D
 
-LIBFT = libft/libft.a
+CC			= cc
+CFLAGS		= -Wall -Wextra -Werror -g
 
-DIR 	 =      src/
+LIBFT_DIR	= libft
+MLX_DIR		= mlx
 
-SRC	     =		src/main.c	 \
- 				src/clean.c \
-				src/handle_keys.c \
-				src/init_game.c \
-				src/parsing/parsing.c \
-				src/parsing/cub_config.c \
-				src/parsing/parse_utils.c \
-				src/parsing/color.c
+LIBFT		= $(LIBFT_DIR)/libft.a
 
+# Mac
+MLX_FLAGS	= -L$(MLX_DIR) -lmlx -framework OpenGL -framework AppKit -lm
 
-CC       =	    cc
+# Linux
+# MLX_FLAGS	= -L$(MLX_DIR) -lmlx -lXext -lX11 -lm
 
-CFLAGS   =	    -Wall -Wextra -Werror -g3 -I./inc -Imlx
+INCLUDES	= -I$(LIBFT_DIR)/include -Iincludes -I$(MLX_DIR)
 
-OBJ_DIR	 =	    obj/
+SRCS		= src/game/main.c \
+			  src/game/init.c \
+			  src/game/clean.c \
+			  src/game/keys.c \
+			  src/game/game_loop.c \
+			  src/game/player.c \
+			  src/parsing/parsing.c \
+			  src/parsing/parsing_config.c \
+			  src/parsing/parsing_validate.c \
+			  src/parsing/parsing_walls.c \
+			  src/parsing/parsing_utils.c \
+			  src/parsing/color.c \
+			  src/rendering/raycasting.c
 
-SRCS     =      $(SRC)
+OBJS		= $(SRCS:.c=.o)
 
-OBJ 	 =      $(patsubst src/%.c, $(OBJ_DIR)%.o, $(SRCS))
+all: $(NAME)
 
-MAKE_DIR =      mkdir -p
+$(LIBFT):
+	@make -C $(LIBFT_DIR)
 
-SMAKE	 =      make --no-print-directory
+%.o: %.c
+	$(CC) $(CFLAGS) $(INCLUDES) -c $< -o $@
 
-MLX_LIB = $(MLX_DIR)/libmlx_Linux.a
-
-MLX_DIR = ./mlx
-
-MLX_REPO = https://github.com/42Paris/minilibx-linux.git
-
-MLX_FLAGS = -L $(MLX_DIR) -lmlx_Linux -L /usr/X11/lib -lXext -lX11 -lm
-
-$(MLX_LIB):
-	@if [ ! -d "$(MLX_DIR)" ]; then \
-		echo "$(YELLOW)[INFO] MinilibX not found, cloning...$(RESET)"; \
-		git clone $(MLX_REPO) $(MLX_DIR); \
-	fi
-	@echo "$(YELLOW)[INFO] Compiling MinilibX...$(RESET)"
-	@make -C $(MLX_DIR)
-
-$(OBJ_DIR)%.o:  src/%.c
-				@$(MAKE_DIR) $(dir $@)
-				@$(CC) $(CFLAGS) -c $< -o $@
-
-all:	        $(NAME)
-
-libft/libft.a:
-	@$(MAKE) -C libft --no-print-directory
-
-$(NAME):        $(OBJ) $(LIBFT) $(MLX_LIB)
-				@$(CC) $(CFLAGS) $(OBJ) $(LIBFT) $(MLX_LIB) $(MLX_FLAGS) -o $@
+$(NAME): $(LIBFT) $(OBJS)
+	$(CC) $(CFLAGS) $(OBJS) $(LIBFT) $(MLX_FLAGS) -o $(NAME)
 
 clean:
-				@rm -rf $(OBJ_DIR)
-				@make -C libft clean --no-print-directory
-				@echo "\033[1;31m======== object files removed ========\033[0m"
+	rm -f $(OBJS)
+	@make -C $(LIBFT_DIR) clean
 
-fclean:         clean
-				@$(RM) $(NAME)
-				@make -C libft fclean --no-print-directory
-				@rm -rf minilibx-linux
-				@echo "\033[1;31m======== executable removed  =======\033[0m"
+fclean: clean
+	rm -f $(NAME)
+	@make -C $(LIBFT_DIR) fclean
 
-re:             fclean all
+re: fclean all
 
-.PHONY: clean fclean all re
+.PHONY: all clean fclean re
