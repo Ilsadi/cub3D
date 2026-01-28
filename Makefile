@@ -6,7 +6,7 @@
 #    By: amacaull <amacaull@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2026/01/22 22:35:31 by ilsadi            #+#    #+#              #
-#    Updated: 2026/01/28 16:16:39 by amacaull         ###   ########.fr        #
+#    Updated: 2026/01/28 16:18:36 by amacaull         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -23,6 +23,7 @@ LIBFT		= $(LIBFT_DIR)/libft.a
 # Mac
 MLX_FLAGS	= -L$(MLX_DIR) -lmlx -framework OpenGL -framework AppKit -lm
 
+#Linux
 # MLX_FLAGS    = -L$(MLX_DIR) -lmlx -lXext -lX11 -lm
 
 # MLX_LIB = $(MLX_DIR)/libmlx_Linux.a
