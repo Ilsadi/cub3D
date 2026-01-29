@@ -6,14 +6,14 @@
 /*   By: amacaull <amacaull@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/29 09:23:50 by amacaull          #+#    #+#             */
-/*   Updated: 2026/01/29 14:57:56 by amacaull         ###   ########.fr       */
+/*   Updated: 2026/01/29 15:07:07 by amacaull         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "cub3d.h"
 
 #define MINI_SCALE 8
-#define MINI_OFFSET 10
+#define MINI_OFFSET 8
 #define MINI_PLAYER 0xFF0000
 #define MINI_WALL 0x444444
 #define MINI_FLOOR 0xAAAAAA

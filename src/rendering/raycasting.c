@@ -6,7 +6,7 @@
 /*   By: amacaull <amacaull@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/27 12:03:57 by amacaull          #+#    #+#             */
-/*   Updated: 2026/01/29 14:58:33 by amacaull         ###   ########.fr       */
+/*   Updated: 2026/01/29 23:53:47 by amacaull         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -121,13 +121,13 @@ static t_img	*get_texture(t_game *game, t_ray *ray)
 	}
 }
 
-static void	calc_tex_x(t_game *game, t_ray *ray)
+static void	calc_tex_x(t_ray *ray, t_img *tex)
 {
-	ray->tex_x = (int)(ray->wall_x * game->tex.tex_width);
+	ray->tex_x = (int)(ray->wall_x * tex->width);
 	if (ray->side == 0 && ray->ray_dir_x > 0)
-		ray->tex_x = game->tex.tex_width - ray->tex_x - 1;
+		ray->tex_x = tex->width - ray->tex_x - 1;
 	if (ray->side == 1 && ray->ray_dir_y < 0)
-		ray->tex_x = game->tex.tex_width - ray->tex_x - 1;
+		ray->tex_x = tex->width - ray->tex_x - 1;
 }
 
 static void	draw_column(t_game *game, int x, t_ray *ray)
@@ -137,24 +137,34 @@ static void	draw_column(t_game *game, int x, t_ray *ray)
 	t_img	*tex;
 
 	y = 0;
-	while (y < ray->draw_start)
-		put_pixel(&game->img, x, y++, game->tex.ceil);
+	if (!game->tex.use_ceil_tex)
+	{
+		while (y < ray->draw_start)
+			put_pixel(&game->img, x, y++, game->tex.ceil);
+	}
+	else
+		y = ray->draw_start;
 	tex = get_texture(game, ray);
-	calc_tex_x(game, ray);
-	ray->tex_step = 1.0 * game->tex.tex_height / ray->line_height;
+	calc_tex_x(ray, tex);
+	ray->tex_step = 1.0 * tex->height / ray->line_height;
 	ray->tex_pos = (ray->draw_start - HEIGHT / 2 + ray->line_height / 2)
 		* ray->tex_step;
 	while (y <= ray->draw_end)
 	{
-		ray->tex_y = (int)ray->tex_pos & (game->tex.tex_height - 1);
+		ray->tex_y = (int)ray->tex_pos & (tex->height - 1);
 		ray->tex_pos += ray->tex_step;
-		color = tex->addr[ray->tex_y * game->tex.tex_width + ray->tex_x];
+		if (ray->tex_y >= tex->height)
+			ray->tex_y = tex->height - 1;
+		color = tex->addr[ray->tex_y * tex->width + ray->tex_x];
 		if (ray->side == 1)
 			color = ((color >> 1) & 0x7F7F7F);
 		put_pixel(&game->img, x, y++, color);
 	}
-	while (y < HEIGHT)
-		put_pixel(&game->img, x, y++, game->tex.floor);
+	if (!game->tex.use_floor_tex)
+	{
+		while (y < HEIGHT)
+			put_pixel(&game->img, x, y++, game->tex.floor);
+	}
 }
 
 void	render_frame(t_game *game)

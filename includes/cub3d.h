@@ -6,7 +6,7 @@
 /*   By: amacaull <amacaull@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/07 13:15:35 by ilsadi            #+#    #+#             */
-/*   Updated: 2026/01/29 14:58:54 by amacaull         ###   ########.fr       */
+/*   Updated: 2026/01/29 23:53:19 by amacaull         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,16 +24,16 @@
 # define WIDTH 1280
 # define HEIGHT 720
 
-/* Keycodes Mac 
+/* Keycodes Mac */
 # define KEY_W 13
 # define KEY_A 0
 # define KEY_S 1
 # define KEY_D 2
 # define KEY_LEFT 123
 # define KEY_RIGHT 124
-# define KEY_ESC 53*/
+# define KEY_ESC 53
 
-//Keycodes Linux (décommenter si besoin)
+/* Keycodes Linux (décommenter si besoin)
 # define KEY_W 119
 # define KEY_A 97
 # define KEY_S 115
@@ -41,20 +41,21 @@
 # define KEY_LEFT 65361
 # define KEY_RIGHT 65363
 # define KEY_ESC 65307
-
+*/
 
 /* ************************************************************************** */
 /*                                 STRUCTURES                                 */
 /* ************************************************************************** */
 
-typedef struct s_img
-{
-	void	*img;
-	int		*addr;
-	int		pixel_bits;
-	int		size_line;
-	int		endian;
-}	t_img;
+typedef struct s_img {
+    void    *img;
+    int     *addr;
+    int     pixel_bits;
+    int     size_line;
+    int     endian;
+    int     width;
+    int     height;
+} t_img;
 
 typedef struct s_tex
 {
@@ -62,6 +63,8 @@ typedef struct s_tex
 	char	*so_path;
 	char	*we_path;
 	char	*ea_path;
+	char	*floor_path;
+	char	*ceil_path;
 	int		floor;
 	int		ceil;
 	int		floor_set;
@@ -70,9 +73,28 @@ typedef struct s_tex
 	t_img	south;
 	t_img	east;
 	t_img	west;
+	t_img	floor_tex;
+	t_img	ceil_tex;
 	int		tex_width;
 	int		tex_height;
+	int		use_floor_tex;
+	int		use_ceil_tex;
 }	t_tex;
+
+typedef struct s_floor
+{
+	double	ray_dir_x0;
+	double	ray_dir_y0;
+	double	ray_dir_x1;
+	double	ray_dir_y1;
+	int		p;
+	double	pos_z;
+	double	row_distance;
+	double	floor_step_x;
+	double	floor_step_y;
+	double	floor_x;
+	double	floor_y;
+}	t_floor;
 
 typedef struct s_map
 {
@@ -200,5 +222,8 @@ int		load_textures(t_game *game);
 
 /* minimap.c */
 void	render_minimap(t_game *game);
+
+/* floor_ceiling.c */
+void	render_floor_ceiling(t_game *game);
 
 #endif
