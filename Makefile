@@ -6,22 +6,24 @@
 #    By: amacaull <amacaull@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2026/01/22 22:35:31 by ilsadi            #+#    #+#              #
-#    Updated: 2026/01/28 16:18:36 by amacaull         ###   ########.fr        #
+#    Updated: 2026/01/29 12:54:43 by amacaull         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
-NAME		= cub3D
+NAME        = cub3D
 
-CC			= cc
-CFLAGS		= -Wall -Wextra -Werror -g
+CC          = cc
 
-LIBFT_DIR	= libft
-MLX_DIR		= mlx
+CFLAGS      = -Wall -Wextra -Werror -g
 
-LIBFT		= $(LIBFT_DIR)/libft.a
+LIBFT_DIR   = libft
+
+MLX_DIR     = mlx
+
+LIBFT       = $(LIBFT_DIR)/libft.a
 
 # Mac
-MLX_FLAGS	= -L$(MLX_DIR) -lmlx -framework OpenGL -framework AppKit -lm
+MLX_FLAGS   = -L$(MLX_DIR) -lmlx -framework OpenGL -framework AppKit -lm
 
 #Linux
 # MLX_FLAGS    = -L$(MLX_DIR) -lmlx -lXext -lX11 -lm
@@ -33,30 +35,31 @@ MLX_FLAGS	= -L$(MLX_DIR) -lmlx -framework OpenGL -framework AppKit -lm
 # MLX_REPO = https://github.com/42Paris/minilibx-linux.git
 
 # $(MLX_LIB):
-#     @if [ ! -d "$(MLX_DIR)" ]; then \
-#         echo "$(YELLOW)[INFO] MinilibX not found, cloning...$(RESET)"; \
-#         git clone $(MLX_REPO) $(MLX_DIR); \
-#     fi
-#     @echo "$(YELLOW)[INFO] Compiling MinilibX...$(RESET)"
-#     @make -C $(MLX_DIR)
+# 	@if [ ! -d "$(MLX_DIR)" ]; then \
+# 		echo "$(YELLOW)[INFO] MinilibX not found, cloning...$(RESET)"; \
+# 		git clone $(MLX_REPO) $(MLX_DIR); \
+# 	fi
+# 	@echo "$(YELLOW)[INFO] Compiling MinilibX...$(RESET)"
+# 	@make -C $(MLX_DIR)
 
-INCLUDES	= -I$(LIBFT_DIR)/include -Iincludes -I$(MLX_DIR)
+INCLUDES    = -I$(LIBFT_DIR)/include -Iincludes -I$(MLX_DIR)
 
-SRCS		= src/game/main.c \
-			  src/game/init.c \
-			  src/game/clean.c \
-			  src/game/keys.c \
-			  src/game/game_loop.c \
-			  src/game/player.c \
-			  src/parsing/parsing.c \
-			  src/parsing/parsing_config.c \
-			  src/parsing/parsing_validate.c \
-			  src/parsing/parsing_walls.c \
-			  src/parsing/parsing_utils.c \
-			  src/parsing/color.c \
-			  src/rendering/raycasting.c
+SRCS        = src/game/main.c \
+              src/game/init.c \
+              src/game/clean.c \
+              src/game/keys.c \
+              src/game/game_loop.c \
+              src/game/player.c \
+              src/parsing/parsing.c \
+              src/parsing/parsing_config.c \
+              src/parsing/parsing_validate.c \
+              src/parsing/parsing_walls.c \
+              src/parsing/parsing_utils.c \
+              src/parsing/color.c \
+              src/rendering/raycasting.c \
+              src/rendering/textures.c
 
-OBJS		= $(SRCS:.c=.o)
+OBJS        = $(SRCS:.c=.o)
 
 all: $(NAME)
 

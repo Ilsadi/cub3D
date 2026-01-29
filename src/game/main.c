@@ -6,7 +6,7 @@
 /*   By: amacaull <amacaull@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/09 14:37:11 by ilsadi            #+#    #+#             */
-/*   Updated: 2026/01/28 10:00:51 by amacaull         ###   ########.fr       */
+/*   Updated: 2026/01/29 12:49:55 by amacaull         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,6 +57,8 @@ int	main(int ac, char **av)
 		return (1);
 	if (!init_mlx(&game))
 		return (1);
+	if (!load_textures(&game))
+		return (clean_everything(&game), 1);
 	set_img(&game);
 	init_player_direction(&game);
 	setup_hooks(&game);

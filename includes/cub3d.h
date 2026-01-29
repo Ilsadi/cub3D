@@ -6,7 +6,7 @@
 /*   By: amacaull <amacaull@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/07 13:15:35 by ilsadi            #+#    #+#             */
-/*   Updated: 2026/01/28 14:47:22 by amacaull         ###   ########.fr       */
+/*   Updated: 2026/01/29 12:55:59 by amacaull         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -194,5 +194,8 @@ int		parse_rgb(t_game *game, char *str);
 
 /* raycasting.c */
 void	render_frame(t_game *game);
+
+/* textures.c */
+int		load_textures(t_game *game);
 
 #endif

@@ -6,13 +6,13 @@
 /*   By: amacaull <amacaull@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/09 15:13:26 by ilsadi            #+#    #+#             */
-/*   Updated: 2026/01/28 10:14:57 by amacaull         ###   ########.fr       */
+/*   Updated: 2026/01/29 12:51:15 by amacaull         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "cub3d.h"
 
-static void	free_textures(t_game *game)
+static void	free_texture_paths(t_game *game)
 {
 	if (game->tex.no_path)
 		free(game->tex.no_path);
@@ -24,10 +24,23 @@ static void	free_textures(t_game *game)
 		free(game->tex.ea_path);
 }
 
+static void	free_texture_images(t_game *game)
+{
+	if (game->tex.north.img)
+		mlx_destroy_image(game->mlx, game->tex.north.img);
+	if (game->tex.south.img)
+		mlx_destroy_image(game->mlx, game->tex.south.img);
+	if (game->tex.west.img)
+		mlx_destroy_image(game->mlx, game->tex.west.img);
+	if (game->tex.east.img)
+		mlx_destroy_image(game->mlx, game->tex.east.img);
+}
+
 int	clean_everything(t_game *game)
 {
 	if (game->img.img)
 		mlx_destroy_image(game->mlx, game->img.img);
+	free_texture_images(game);
 	if (game->win)
 		mlx_destroy_window(game->mlx, game->win);
 // 	if (game->mlx)
@@ -35,7 +48,7 @@ int	clean_everything(t_game *game)
 // 		mlx_destroy_display(game->mlx);
 // 		free(game->mlx);
 // 	}
-	free_textures(game);
+	free_texture_paths(game);
 	if (game->map.grid)
 		ft_free_tab(game->map.grid);
 	exit(0);
