@@ -6,7 +6,7 @@
 /*   By: amacaull <amacaull@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/07 13:15:35 by ilsadi            #+#    #+#             */
-/*   Updated: 2026/01/29 12:55:59 by amacaull         ###   ########.fr       */
+/*   Updated: 2026/01/29 14:58:54 by amacaull         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,7 +33,7 @@
 # define KEY_RIGHT 124
 # define KEY_ESC 53
 
-/* Keycodes Linux
+/* Keycodes Linux (décommenter si besoin)
 # define KEY_W 119
 # define KEY_A 97
 # define KEY_S 115
@@ -197,5 +197,8 @@ void	render_frame(t_game *game);
 
 /* textures.c */
 int		load_textures(t_game *game);
+
+/* minimap.c */
+void	render_minimap(t_game *game);
 
 #endif

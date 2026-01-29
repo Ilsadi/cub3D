@@ -6,20 +6,15 @@
 #    By: amacaull <amacaull@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2026/01/22 22:35:31 by ilsadi            #+#    #+#              #
-#    Updated: 2026/01/29 12:54:43 by amacaull         ###   ########.fr        #
+#    Updated: 2026/01/29 13:06:38 by amacaull         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 NAME        = cub3D
-
 CC          = cc
-
 CFLAGS      = -Wall -Wextra -Werror -g
-
 LIBFT_DIR   = libft
-
 MLX_DIR     = mlx
-
 LIBFT       = $(LIBFT_DIR)/libft.a
 
 # Mac
@@ -27,13 +22,9 @@ MLX_FLAGS   = -L$(MLX_DIR) -lmlx -framework OpenGL -framework AppKit -lm
 
 #Linux
 # MLX_FLAGS    = -L$(MLX_DIR) -lmlx -lXext -lX11 -lm
-
 # MLX_LIB = $(MLX_DIR)/libmlx_Linux.a
-
 # MLX_DIR = ./mlx
-
 # MLX_REPO = https://github.com/42Paris/minilibx-linux.git
-
 # $(MLX_LIB):
 # 	@if [ ! -d "$(MLX_DIR)" ]; then \
 # 		echo "$(YELLOW)[INFO] MinilibX not found, cloning...$(RESET)"; \
@@ -57,7 +48,8 @@ SRCS        = src/game/main.c \
               src/parsing/parsing_utils.c \
               src/parsing/color.c \
               src/rendering/raycasting.c \
-              src/rendering/textures.c
+              src/rendering/textures.c \
+              src/rendering/minimap.c
 
 OBJS        = $(SRCS:.c=.o)
 

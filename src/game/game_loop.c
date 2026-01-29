@@ -6,7 +6,7 @@
 /*   By: amacaull <amacaull@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/28 10:15:46 by amacaull          #+#    #+#             */
-/*   Updated: 2026/01/28 10:16:12 by amacaull         ###   ########.fr       */
+/*   Updated: 2026/01/29 13:05:14 by amacaull         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,5 +16,7 @@ int	game_loop(t_game *game)
 {
 	update_player(game);
 	render_frame(game);
+	render_minimap(game);
+	mlx_put_image_to_window(game->mlx, game->win, game->img.img, 0, 0);
 	return (0);
 }
