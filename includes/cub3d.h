@@ -6,7 +6,7 @@
 /*   By: amacaull <amacaull@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/07 13:15:35 by ilsadi            #+#    #+#             */
-/*   Updated: 2026/01/30 17:24:10 by amacaull         ###   ########.fr       */
+/*   Updated: 2026/01/30 20:19:08 by amacaull         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,7 @@
 
 // PLAYER PHYSICS
 # define MOVE_SPEED 0.025
-# define SPRINT_SPEED 0.030
+# define SPRINT_SPEED 0.040
 # define ROT_SPEED 0.03
 
 // PLAYER STATS
