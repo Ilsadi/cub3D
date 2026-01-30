@@ -6,19 +6,22 @@
 #    By: amacaull <amacaull@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2026/01/22 22:35:31 by ilsadi            #+#    #+#              #
-#    Updated: 2026/01/29 23:36:57 by amacaull         ###   ########.fr        #
+#    Updated: 2026/01/30 10:00:35 by amacaull         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 NAME        = cub3D
 CC          = cc
 CFLAGS      = -Wall -Wextra -Werror -g
-LIBFT_DIR   = libft
-MLX_DIR     = mlx
-LIBFT       = $(LIBFT_DIR)/libft.a
 
-# Mac
-MLX_FLAGS   = -L$(MLX_DIR) -lmlx -framework OpenGL -framework AppKit -lm
+SRC_DIR     = src
+OBJ_DIR     = obj
+INC_DIR     = includes
+
+LIBFT_PATH  = libft
+LIBFT       = $(LIBFT_PATH)/libft.a
+MLX_PATH    = mlx
+MLX         = $(MLX_PATH)/libmlx.a
 
 #Linux
 # MLX_FLAGS    = -L$(MLX_DIR) -lmlx -lXext -lX11 -lm
@@ -26,53 +29,156 @@ MLX_FLAGS   = -L$(MLX_DIR) -lmlx -framework OpenGL -framework AppKit -lm
 # MLX_DIR = ./mlx
 # MLX_REPO = https://github.com/42Paris/minilibx-linux.git
 # $(MLX_LIB):
-# 	@if [ ! -d "$(MLX_DIR)" ]; then \
-# 		echo "$(YELLOW)[INFO] MinilibX not found, cloning...$(RESET)"; \
-# 		git clone $(MLX_REPO) $(MLX_DIR); \
-# 	fi
-# 	@echo "$(YELLOW)[INFO] Compiling MinilibX...$(RESET)"
-# 	@make -C $(MLX_DIR)
+#       @if [ ! -d "$(MLX_DIR)" ]; then \
+#               echo "$(YELLOW)[INFO] MinilibX not found, cloning...$(RESET)"; \
+#               git clone $(MLX_REPO) $(MLX_DIR); \
+#       fi
+#       @echo "$(YELLOW)[INFO] Compiling MinilibX...$(RESET)"
+#       @make -C $(MLX_DIR)
 
-INCLUDES    = -I$(LIBFT_DIR)/include -Iincludes -I$(MLX_DIR)
+
+INCLUDES    = -I $(INC_DIR) -I $(LIBFT_PATH)/include -I $(MLX_PATH)
+LIBS        = $(LIBFT) -L$(MLX_PATH) -lmlx -framework OpenGL -framework AppKit -lm
 
 SRCS        = src/game/main.c \
-              src/game/init.c \
-              src/game/clean.c \
-              src/game/keys.c \
-              src/game/game_loop.c \
-              src/game/player.c \
-              src/parsing/parsing.c \
-              src/parsing/parsing_config.c \
-              src/parsing/parsing_validate.c \
-              src/parsing/parsing_walls.c \
-              src/parsing/parsing_utils.c \
-              src/parsing/color.c \
-              src/rendering/raycasting.c \
-              src/rendering/textures.c \
-              src/rendering/minimap.c \
-              src/rendering/floor_ceiling.c
+			  src/game/init.c \
+			  src/game/clean.c \
+			  src/game/keys.c \
+			  src/game/mouse.c \
+			  src/game/game_loop.c \
+			  src/game/player.c \
+			  src/game/player_utils.c \
+			  src/parsing/parsing.c \
+			  src/parsing/parsing_config.c \
+			  src/parsing/parsing_validate.c \
+			  src/parsing/parsing_walls.c \
+			  src/parsing/parsing_utils.c \
+			  src/parsing/color.c \
+			  src/rendering/raycasting.c \
+			  src/rendering/raycasting_utils.c \
+			  src/rendering/textures.c \
+			  src/rendering/minimap.c \
+			  src/rendering/floor_ceiling.c \
+			  src/rendering/shading.c
 
-OBJS        = $(SRCS:.c=.o)
+OBJS        = $(SRCS:%.c=$(OBJ_DIR)/%.o)
 
-all: $(NAME)
+TITLE       = CUB3D
+CURR_TOTAL  = $(words $(SRCS))
+CURRENT     = 0
 
-$(LIBFT):
-	@make -C $(LIBFT_DIR)
+C_CYAN      = \033[38;5;51m
+C_MAGENTA   = \033[38;5;198m
+C_YELLOW    = \033[38;5;226m
+C_GREEN     = \033[38;5;46m
+C_ORANGE    = \033[38;5;208m
+C_WHITE     = \033[38;5;255m
+C_GRAY      = \033[38;5;244m
+C_RESET     = \033[0m
+C_BOLD      = \033[1m
+CLEAR_LINE  = \033[2K
 
-%.o: %.c
-	$(CC) $(CFLAGS) $(INCLUDES) -c $< -o $@
+all:
+	@$(MAKE) -C $(LIBFT_PATH) --no-print-directory
+	@$(MAKE) -C $(MLX_PATH) --no-print-directory 2>/dev/null
+	@$(MAKE) header CURR_TOTAL=$(words $(SRCS)) --no-print-directory
+	@$(MAKE) $(NAME) --no-print-directory
 
-$(NAME): $(LIBFT) $(OBJS)
-	$(CC) $(CFLAGS) $(OBJS) $(LIBFT) $(MLX_FLAGS) -o $(NAME)
+$(NAME): $(OBJS)
+	@$(CC) $(CFLAGS) $(OBJS) $(LIBS) -o $(NAME)
+	@$(MAKE) footer --no-print-directory
+
+header:
+	@tput civis 2>/dev/null || true
+	@echo ""
+	@printf "    $(C_MAGENTA)$(C_BOLD)$(TITLE)$(C_RESET)\n"
+	@printf "    $(C_CYAN)──────────────────────────────────────────$(C_RESET)\n"
+	@echo ""
+	@printf "    $(C_GRAY)Status    $(C_ORANGE)%s$(C_RESET)\n" "waiting..."
+	@printf "    $(C_GRAY)Target    $(C_WHITE)%s$(C_RESET)\n" "$(NAME)"
+	@printf "    $(C_GRAY)Current   $(C_WHITE)%s$(C_RESET)\n" "..."
+	@echo ""
+	@printf "    $(C_GRAY)[........................................]$(C_RESET)\n"
+	@echo ""
+	@printf "    $(C_GRAY)Progress  $(C_WHITE)%-10s$(C_GRAY)Files  $(C_WHITE)%s$(C_RESET)\n" "0%" "0/$(CURR_TOTAL)"
+	@printf "    $(C_GRAY)Warnings  $(C_GREEN)%-10s$(C_GRAY)Errors $(C_GREEN)%s$(C_RESET)\n" "0" "0"
+	@echo ""
+	@printf "    $(C_CYAN)──────────────────────────────────────────$(C_RESET)\n"
+	@tput cuu 10
+
+footer:
+	@printf "$(CLEAR_LINE)    $(C_GRAY)Status    $(C_GREEN)$(C_BOLD)%s$(C_RESET)\n" "complete ✓"
+	@printf "$(CLEAR_LINE)    $(C_GRAY)Target    $(C_WHITE)%s$(C_RESET)\n" "$(NAME)"
+	@printf "$(CLEAR_LINE)    $(C_GRAY)Current   $(C_GREEN)%s$(C_RESET)\n" "done"
+	@printf "$(CLEAR_LINE)\n"
+	@printf "$(CLEAR_LINE)    $(C_GRAY)[$(C_GREEN)########################################$(C_GRAY)]$(C_RESET)\n"
+	@printf "$(CLEAR_LINE)\n"
+	@printf "$(CLEAR_LINE)    $(C_GRAY)Progress  $(C_GREEN)%-10s$(C_GRAY)Files  $(C_GREEN)%s$(C_RESET)\n" "100%" "$(CURR_TOTAL)/$(CURR_TOTAL)"
+	@printf "$(CLEAR_LINE)    $(C_GRAY)Warnings  $(C_GREEN)%-10s$(C_GRAY)Errors $(C_GREEN)%s$(C_RESET)\n" "0" "0"
+	@printf "$(CLEAR_LINE)\n"
+	@printf "$(CLEAR_LINE)    $(C_CYAN)──────────────────────────────────────────$(C_RESET)\n"
+	@echo ""
+	@tput cnorm 2>/dev/null || true
+
+define compile_progress
+	$(eval CURRENT=$(shell echo $$(($(CURRENT)+1))))
+	$(eval PERCENT=$(shell echo $$(($(CURRENT)*100/$(CURR_TOTAL)))))
+	$(eval FILLED=$(shell echo $$(($(CURRENT)*40/$(CURR_TOTAL)))))
+	$(eval EMPTY=$(shell echo $$((40-$(FILLED)))))
+	@mkdir -p $(dir $@)
+	@$(CC) $(CFLAGS) $(INCLUDES) -c $< -o $@
+	@BAR_FILL=$$(printf "%.*s" $(FILLED) "########################################"); \
+	 BAR_EMPTY=$$(printf "%.*s" $(EMPTY) "........................................"); \
+	 printf "$(CLEAR_LINE)    $(C_GRAY)Status    $(C_ORANGE)%s$(C_RESET)\n" "compiling"; \
+	 printf "$(CLEAR_LINE)    $(C_GRAY)Target    $(C_WHITE)%s$(C_RESET)\n" "$(NAME)"; \
+	 printf "$(CLEAR_LINE)    $(C_GRAY)Current   $(C_YELLOW)%s$(C_RESET)\n" "$(notdir $<)"; \
+	 printf "$(CLEAR_LINE)\n"; \
+	 printf "$(CLEAR_LINE)    $(C_GRAY)[$(C_MAGENTA)%-40s$(C_GRAY)]$(C_RESET)\n" "$$BAR_FILL$$BAR_EMPTY"; \
+	 printf "$(CLEAR_LINE)\n"; \
+	 printf "$(CLEAR_LINE)    $(C_GRAY)Progress  $(C_WHITE)%-10s$(C_GRAY)Files  $(C_WHITE)%s$(C_RESET)\n" "$(PERCENT)%" "$(CURRENT)/$(CURR_TOTAL)"; \
+	 printf "$(CLEAR_LINE)    $(C_GRAY)Warnings  $(C_GREEN)%-10s$(C_GRAY)Errors $(C_GREEN)%s$(C_RESET)\n" "0" "0"; \
+	 printf "$(CLEAR_LINE)\n"; \
+	 tput cuu 9
+endef
+
+$(OBJ_DIR)/%.o: %.c
+	@$(call compile_progress)
 
 clean:
-	rm -f $(OBJS)
-	@make -C $(LIBFT_DIR) clean
+	@make clean -C $(LIBFT_PATH) --no-print-directory
+	@make clean -C $(MLX_PATH) --no-print-directory 2>/dev/null
+	@rm -rf $(OBJ_DIR)
+	@echo ""
+	@printf "    $(C_CYAN)──────────────────────────────────────────$(C_RESET)\n"
+	@printf "    $(C_ORANGE)✗ $(C_GRAY)Cleaned $(C_WHITE)cub3D $(C_GRAY)objects$(C_RESET)\n"
+	@printf "    $(C_CYAN)──────────────────────────────────────────$(C_RESET)\n"
+	@echo ""
 
-fclean: clean
-	rm -f $(NAME)
-	@make -C $(LIBFT_DIR) fclean
+fclean:
+	@make fclean -C $(LIBFT_PATH) --no-print-directory
+	@make clean -C $(MLX_PATH) --no-print-directory 2>/dev/null
+	@rm -rf $(OBJ_DIR)
+	@rm -f $(NAME)
+	@echo ""
+	@printf "    $(C_CYAN)──────────────────────────────────────────$(C_RESET)\n"
+	@printf "    $(C_ORANGE)✗ $(C_GRAY)Cleaned $(C_WHITE)cub3D $(C_GRAY)objects$(C_RESET)\n"
+	@printf "    $(C_ORANGE)✗ $(C_GRAY)Removed $(C_WHITE)$(NAME)$(C_RESET)\n"
+	@printf "    $(C_CYAN)──────────────────────────────────────────$(C_RESET)\n"
+	@echo ""
 
 re: fclean all
 
-.PHONY: all clean fclean re
+norm:
+	@echo ""
+	@printf "    $(C_CYAN)──────────────────────────────────────────$(C_RESET)\n"
+	@printf "    $(C_MAGENTA)Norminette $(C_GRAY)%s$(C_RESET)\n" "checking..."
+	@if norminette $(SRC_DIR) $(INC_DIR) | grep -q "Error"; then \
+		printf "    $(C_ORANGE)Errors found!$(C_RESET)\n"; \
+		norminette $(SRC_DIR) $(INC_DIR) | grep "Error"; \
+	else \
+		printf "    $(C_GREEN)All clear ✓$(C_RESET)\n"; \
+	fi
+	@printf "    $(C_CYAN)──────────────────────────────────────────$(C_RESET)\n"
+	@echo ""
+
+.PHONY: all clean fclean re norm header footer

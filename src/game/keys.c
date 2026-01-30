@@ -6,7 +6,7 @@
 /*   By: amacaull <amacaull@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/09 15:16:45 by ilsadi            #+#    #+#             */
-/*   Updated: 2026/01/28 15:23:38 by amacaull         ###   ########.fr       */
+/*   Updated: 2026/01/30 09:46:13 by amacaull         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,6 +28,8 @@ int	handle_keypress(int keycode, t_game *game)
 		game->player.rotate_left = 1;
 	if (keycode == KEY_RIGHT)
 		game->player.rotate_right = 1;
+	if (keycode == KEY_SHIFT)
+		game->player.is_sprinting = 1;
 	return (0);
 }
 
@@ -45,5 +47,7 @@ int	handle_keyrelease(int keycode, t_game *game)
 		game->player.rotate_left = 0;
 	if (keycode == KEY_RIGHT)
 		game->player.rotate_right = 0;
+	if (keycode == KEY_SHIFT)
+		game->player.is_sprinting = 0;
 	return (0);
 }

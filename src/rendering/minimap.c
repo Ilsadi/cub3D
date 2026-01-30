@@ -6,25 +6,16 @@
 /*   By: amacaull <amacaull@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/29 09:23:50 by amacaull          #+#    #+#             */
-/*   Updated: 2026/01/29 15:07:07 by amacaull         ###   ########.fr       */
+/*   Updated: 2026/01/30 11:53:07 by amacaull         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "cub3d.h"
 
-#define MINI_SCALE 8
-#define MINI_OFFSET 8
-#define MINI_PLAYER 0xFF0000
-#define MINI_WALL 0x444444
-#define MINI_FLOOR 0xAAAAAA
-#define MINI_BG 0x222222
-
 static void	draw_square(t_game *game, int x, int y, int color)
 {
 	int	i;
 	int	j;
-	int	px;
-	int	py;
 
 	i = 0;
 	while (i < MINI_SCALE)
@@ -32,89 +23,122 @@ static void	draw_square(t_game *game, int x, int y, int color)
 		j = 0;
 		while (j < MINI_SCALE)
 		{
-			px = x + j;
-			py = y + i;
-			put_pixel(&game->img, px, py, color);
+			put_pixel(&game->img, x + j, y + i, color);
 			j++;
 		}
 		i++;
 	}
 }
 
-static void	draw_map_tiles(t_game *game)
+static int	is_visible(t_game *game, double dest_x, double dest_y)
 {
-	int		x;
-	int		y;
-	int		color;
-	char	c;
+	double	pos_x;
+	double	pos_y;
+	double	dx;
+	double	dy;
+	int		steps;
 
-	y = 0;
-	while (y < game->map.height)
+	pos_x = game->player.x;
+	pos_y = game->player.y;
+	dx = dest_x - pos_x;
+	dy = dest_y - pos_y;
+	if (fabs(dx) > fabs(dy))
+		steps = (int)(fabs(dx) * 10);
+	else
+		steps = (int)(fabs(dy) * 10);
+	dx /= steps;
+	dy /= steps;
+	while (steps-- > 0)
 	{
-		x = 0;
-		while (x < game->map.width)
-		{
-			c = game->map.grid[y][x];
-			if (c == '1')
-				color = MINI_WALL;
-			else if (c == '0' || c == 'N' || c == 'S' || c == 'E' || c == 'W')
-				color = MINI_FLOOR;
-			else
-				color = MINI_BG;
-			draw_square(game, MINI_OFFSET + x * MINI_SCALE,
-				MINI_OFFSET + y * MINI_SCALE, color);
-			x++;
-		}
-		y++;
+		if (game->map.grid[(int)pos_y][(int)pos_x] == '1')
+			return (0);
+		pos_x += dx;
+		pos_y += dy;
 	}
+	return (1);
 }
 
-static void	draw_player_dot(t_game *game)
+static void	handle_tile(t_game *game, int x, int y)
 {
-	int	px;
-	int	py;
-	int	i;
-	int	j;
+	int		color;
+	double	dist;
+	char	c;
 
-	px = MINI_OFFSET + (int)(game->player.x * MINI_SCALE);
-	py = MINI_OFFSET + (int)(game->player.y * MINI_SCALE);
+	dist = sqrt(pow(game->player.x - x, 2) + pow(game->player.y - y, 2));
+	c = game->map.grid[y][x];
+	if (c == '1')
+		color = MINI_WALL;
+	else if (c != ' ')
+		color = MINI_FLOOR;
+	else
+		color = MINI_BG;
+	if (dist < 3.9)
+	{
+		if (!is_visible(game, x + 0.5, y + 0.5))
+			color = MINI_BG;
+		else
+			color = apply_shading(color, dist / 1.3);
+	}
+	else
+		color = MINI_BG;
+	draw_square(game, MINI_OFFSET + x * MINI_SCALE,
+		MINI_OFFSET + y * MINI_SCALE, color);
+}
+
+static void	draw_player_icon(t_game *game)
+{
+	int		p[2];
+	int		i;
+	int		j;
+	double	d[2];
+
+	p[0] = MINI_OFFSET + (int)(game->player.x * MINI_SCALE);
+	p[1] = MINI_OFFSET + (int)(game->player.y * MINI_SCALE);
 	i = -2;
 	while (i <= 2)
 	{
 		j = -2;
-		while (j <= 2)
-		{
-			put_pixel(&game->img, px + j, py + i, MINI_PLAYER);
-			j++;
-		}
+		while (j++ <= 2)
+			put_pixel(&game->img, p[0] + j, p[1] + i, MINI_PLAYER);
 		i++;
 	}
-}
-
-static void	draw_player_direction(t_game *game)
-{
-	int		i;
-	int		px;
-	int		py;
-	double	dx;
-	double	dy;
-
-	px = MINI_OFFSET + (int)(game->player.x * MINI_SCALE);
-	py = MINI_OFFSET + (int)(game->player.y * MINI_SCALE);
-	dx = game->ray.dir_x;
-	dy = game->ray.dir_y;
+	d[0] = game->ray.dir_x;
+	d[1] = game->ray.dir_y;
 	i = 0;
-	while (i < 10)
-	{
-		put_pixel(&game->img, px + (int)(dx * i), py + (int)(dy * i),
-			MINI_PLAYER);
-		i++;
-	}
+	while (i++ < 10)
+		put_pixel(&game->img, p[0] + (int)(d[0] * i),
+			p[1] + (int)(d[1] * i), MINI_PLAYER);
 }
 
 void	render_minimap(t_game *game)
 {
-	draw_map_tiles(game);
-	draw_player_dot(game);
-	draw_player_direction(game);
+	int	x;
+	int	y;
+	int	w;
+	int	h;
+
+	y = -1;
+	while (++y < game->map.height)
+	{
+		x = -1;
+		while (++x < game->map.width)
+			handle_tile(game, x, y);
+	}
+	draw_player_icon(game);
+	w = game->map.width * MINI_SCALE;
+	h = game->map.height * MINI_SCALE;
+	x = -2;
+	while (++x < w + 2)
+	{
+		put_pixel(&game->img, MINI_OFFSET + x, MINI_OFFSET - 2, MINI_BORDER);
+		put_pixel(&game->img, MINI_OFFSET + x, MINI_OFFSET + h + 1,
+			MINI_BORDER);
+	}
+	y = -2;
+	while (++y < h + 2)
+	{
+		put_pixel(&game->img, MINI_OFFSET - 2, MINI_OFFSET + y, MINI_BORDER);
+		put_pixel(&game->img, MINI_OFFSET + w + 1, MINI_OFFSET + y,
+			MINI_BORDER);
+	}
 }

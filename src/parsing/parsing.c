@@ -6,7 +6,7 @@
 /*   By: amacaull <amacaull@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/07 13:14:12 by ilsadi            #+#    #+#             */
-/*   Updated: 2026/01/28 09:49:58 by amacaull         ###   ########.fr       */
+/*   Updated: 2026/01/30 09:23:05 by amacaull         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,34 +65,16 @@ static char	*read_config(t_game *game, int fd)
 	return (NULL);
 }
 
-static int	store_map_line(t_game *game, char **tmp, char *line)
-{
-	int	len;
-
-	len = ft_strlen(line);
-	if (len > 0 && line[len - 1] == '\n')
-		line[len - 1] = '\0';
-	tmp[game->map.rows] = ft_strdup(line);
-	if (!tmp[game->map.rows])
-		return (0);
-	game->map.rows++;
-	return (1);
-}
-
-static int	count_and_store_map(t_game *game, int fd, char *first_line)
+static int	handle_map_storage(t_game *game, int fd, char *first, char **tmp)
 {
 	char	*line;
-	char	**tmp;
 	int		in_map;
 
-	tmp = malloc(sizeof(char *) * 1024);
-	if (!tmp)
-		return (free(first_line), 0);
 	game->map.rows = 0;
 	in_map = 1;
-	if (!store_map_line(game, tmp, first_line))
-		return (free(first_line), free(tmp), 0);
-	free(first_line);
+	if (!store_map_line(game, tmp, first))
+		return (free(first), free(tmp), 0);
+	free(first);
 	line = get_next_line(fd);
 	while (line)
 	{
@@ -101,7 +83,8 @@ static int	count_and_store_map(t_game *game, int fd, char *first_line)
 		else if (in_map && is_blank_line(line))
 			in_map = 0;
 		else if (!in_map && !is_blank_line(line))
-			return (free(line), ft_free_tab(tmp), error_msg("Garbage after map"), 0);
+			return (free(line), ft_free_tab(tmp),
+				error_msg("Garbage after map"), 0);
 		free(line);
 		line = get_next_line(fd);
 	}
@@ -113,17 +96,21 @@ static int	count_and_store_map(t_game *game, int fd, char *first_line)
 int	parse_cub_file(t_game *game, char *filename)
 {
 	int		fd;
-	char	*first_map_line;
+	char	*first_line;
+	char	**tmp;
 
 	fd = open(filename, O_RDONLY);
 	if (fd < 0)
 		return (error_msg("Cannot open file"), 0);
-	first_map_line = read_config(game, fd);
-	if (!first_map_line)
+	first_line = read_config(game, fd);
+	if (!first_line)
 		return (close(fd), 0);
 	if (!check_config_complete(game))
-		return (free(first_map_line), close(fd), 0);
-	if (!count_and_store_map(game, fd, first_map_line))
+		return (free(first_line), close(fd), 0);
+	tmp = malloc(sizeof(char *) * 1024);
+	if (!tmp)
+		return (free(first_line), close(fd), 0);
+	if (!handle_map_storage(game, fd, first_line, tmp))
 		return (close(fd), 0);
 	close(fd);
 	if (game->map.rows <= 0)
