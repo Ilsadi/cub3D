@@ -6,7 +6,7 @@
 /*   By: amacaull <amacaull@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/09 14:37:11 by ilsadi            #+#    #+#             */
-/*   Updated: 2026/01/30 11:25:55 by amacaull         ###   ########.fr       */
+/*   Updated: 2026/01/30 15:19:05 by amacaull         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,8 +44,13 @@ static void	setup_hooks(t_game *game)
 	mlx_hook(game->win, 3, 1L << 1, handle_keyrelease, game);
 	mlx_hook(game->win, 17, 0, clean_everything, game);
 	mlx_hook(game->win, 6, 1L << 6, handle_mouse, game);
+#ifdef __linux__
+	mlx_mouse_hide(game->mlx, game->win);
+	mlx_mouse_move(game->mlx, game->win, WIDTH / 2, HEIGHT / 2);
+#else
 	mlx_mouse_hide();
 	mlx_mouse_move(game->win, WIDTH / 2, HEIGHT / 2);
+#endif
 	mlx_loop_hook(game->mlx, game_loop, game);
 }
 
