@@ -6,7 +6,7 @@
 /*   By: amacaull <amacaull@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/09 15:13:26 by ilsadi            #+#    #+#             */
-/*   Updated: 2026/01/29 12:51:15 by amacaull         ###   ########.fr       */
+/*   Updated: 2026/01/30 16:40:24 by amacaull         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,6 +40,8 @@ int	clean_everything(t_game *game)
 {
 	if (game->img.img)
 		mlx_destroy_image(game->mlx, game->img.img);
+	free_hud(game);
+	free_animations(game);
 	free_texture_images(game);
 	if (game->win)
 		mlx_destroy_window(game->mlx, game->win);

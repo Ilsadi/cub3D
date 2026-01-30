@@ -1,0 +1,18 @@
+/* XPM */
+static char *heart_empty[] = {
+/* columns rows colors chars-per-pixel */
+"9 9 3 1 ",
+"  c None",
+". c black",
+"X c #282828",
+/* pixels */
+"  .. ..  ",
+" .XX.XX. ",
+".XXXXXXX.",
+".XXXXXXX.",
+".XXXXXXX.",
+" .XXXXX. ",
+"  .XXX.  ",
+"   .X.   ",
+"    .    "
+};

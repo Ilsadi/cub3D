@@ -1,36 +1,27 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   shading.c                                          :+:      :+:    :+:   */
+/*   loop.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: amacaull <amacaull@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2026/01/30 09:59:09 by amacaull          #+#    #+#             */
-/*   Updated: 2026/01/30 11:53:11 by amacaull         ###   ########.fr       */
+/*   Created: 2026/01/28 10:15:46 by amacaull          #+#    #+#             */
+/*   Updated: 2026/01/30 17:25:34 by amacaull         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "cub3d.h"
 
-int	apply_shading(int color, double distance)
+int	game_loop(t_game *game)
 {
-	int		r;
-	int		g;
-	int		b;
-	double	factor;
-
-	if (distance < 0)
-		distance = 0;
-	if (distance >= MAX_VIEW_DIST)
-		return (0);
-	factor = 1.0 - (distance / MAX_VIEW_DIST);
-	if (factor < 0.0)
-		factor = 0.0;
-	r = (color >> 16) & 0xFF;
-	g = (color >> 8) & 0xFF;
-	b = color & 0xFF;
-	r = (int)(r * factor);
-	g = (int)(g * factor);
-	b = (int)(b * factor);
-	return ((r << 16) | (g << 8) | b);
+	update_player(game);
+	update_metabolism(game);
+	update_animation(game);
+	if (game->tex.use_floor_tex || game->tex.use_ceil_tex)
+		render_floor_ceiling(game);
+	render_frame(game);
+	render_minimap(game);
+	render_hud(game);
+	mlx_put_image_to_window(game->mlx, game->win, game->img.img, 0, 0);
+	return (0);
 }

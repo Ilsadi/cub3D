@@ -6,45 +6,41 @@
 /*   By: amacaull <amacaull@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/30 09:05:30 by amacaull          #+#    #+#             */
-/*   Updated: 2026/01/30 15:19:26 by amacaull         ###   ########.fr       */
+/*   Updated: 2026/01/30 17:06:29 by amacaull         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "cub3d.h"
 
-static void	rotate_view(t_game *game, double rot_speed)
-{
-	double	old_dir_x;
-	double	old_plane_x;
+#define MOUSE_SENSITIVITY 0.002
 
-	old_dir_x = game->ray.dir_x;
-	game->ray.dir_x = game->ray.dir_x * cos(rot_speed)
-		- game->ray.dir_y * sin(rot_speed);
-	game->ray.dir_y = old_dir_x * sin(rot_speed)
-		+ game->ray.dir_y * cos(rot_speed);
-	old_plane_x = game->ray.plane_x;
-	game->ray.plane_x = game->ray.plane_x * cos(rot_speed)
-		- game->ray.plane_y * sin(rot_speed);
-	game->ray.plane_y = old_plane_x * sin(rot_speed)
-		+ game->ray.plane_y * cos(rot_speed);
+static void	update_vectors_from_angle(t_game *game)
+{
+	game->ray.dir_x = cos(game->player.angle);
+	game->ray.dir_y = sin(game->player.angle);
+	game->ray.plane_x = -game->ray.dir_y * 0.66;
+	game->ray.plane_y = game->ray.dir_x * 0.66;
 }
 
 int	handle_mouse(int x, int y, t_game *game)
 {
-	int		delta_x;
-	int		delta_y;
-	double	sensitivity_x;
-	double	sensitivity_y;
+	int	diff_x;
+	int	diff_y;
 
-	sensitivity_x = 0.002;
-	sensitivity_y = 1.0;
-	delta_x = x - (WIDTH / 2);
-	if (delta_x != 0)
-		rotate_view(game, delta_x * sensitivity_x);
-	delta_y = y - (HEIGHT / 2);
-	if (delta_y != 0)
+	diff_x = x - (WIDTH / 2);
+	diff_y = y - (HEIGHT / 2);
+	if (diff_x != 0)
 	{
-		game->player.pitch -= delta_y * sensitivity_y;
+		game->player.angle += diff_x * MOUSE_SENSITIVITY;
+		if (game->player.angle < 0)
+			game->player.angle += 2 * M_PI;
+		if (game->player.angle > 2 * M_PI)
+			game->player.angle -= 2 * M_PI;
+		update_vectors_from_angle(game);
+	}
+	if (diff_y != 0)
+	{
+		game->player.pitch -= diff_y;
 		if (game->player.pitch > HEIGHT)
 			game->player.pitch = HEIGHT;
 		if (game->player.pitch < -HEIGHT)

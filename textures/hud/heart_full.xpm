@@ -1,0 +1,19 @@
+/* XPM */
+static char *heart_full[] = {
+/* columns rows colors chars-per-pixel */
+"9 9 4 1 ",
+"  c None",
+". c #BB1313",
+"X c #FF1313",
+"o c #FFC8C8",
+/* pixels */
+"         ",
+"  XX XX  ",
+" XoXXXXX ",
+" XXXXXXX ",
+" .XXXXX. ",
+"  .XXX.  ",
+"   .X.   ",
+"    .    ",
+"         "
+};

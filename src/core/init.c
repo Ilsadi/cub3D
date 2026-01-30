@@ -6,32 +6,34 @@
 /*   By: amacaull <amacaull@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/13 17:12:23 by ilsadi            #+#    #+#             */
-/*   Updated: 2026/01/28 10:01:08 by amacaull         ###   ########.fr       */
+/*   Updated: 2026/01/30 17:02:57 by amacaull         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "cub3d.h"
 
+void	init_keys(t_game *game)
+{
+	game->keys.w = 0;
+	game->keys.a = 0;
+	game->keys.s = 0;
+	game->keys.d = 0;
+	game->keys.left = 0;
+	game->keys.right = 0;
+	game->keys.shift = 0;
+}
+
 void	set_img(t_game *game)
 {
-	if (game->img.img)
-		mlx_destroy_image(game->mlx, game->img.img);
-	game->img.img = NULL;
-	game->img.addr = NULL;
-	game->img.pixel_bits = 0;
-	game->img.size_line = 0;
-	game->img.endian = 0;
 	game->img.img = mlx_new_image(game->mlx, WIDTH, HEIGHT);
+	if (!game->img.img)
+		return ;
 	game->img.addr = (int *)mlx_get_data_addr(game->img.img,
 			&game->img.pixel_bits, &game->img.size_line, &game->img.endian);
 }
 
 void	put_pixel(t_img *img, int x, int y, int color)
 {
-	int	pixel;
-
-	if (x >= WIDTH || y >= HEIGHT || x < 0 || y < 0)
-		return ;
-	pixel = y * (img->size_line / 4) + x;
-	img->addr[pixel] = color;
+	if (x >= 0 && x < WIDTH && y >= 0 && y < HEIGHT)
+		img->addr[y * (img->size_line / 4) + x] = color;
 }

@@ -6,7 +6,7 @@
 /*   By: amacaull <amacaull@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/27 12:03:57 by amacaull          #+#    #+#             */
-/*   Updated: 2026/01/30 11:26:51 by amacaull         ###   ########.fr       */
+/*   Updated: 2026/01/30 16:38:26 by amacaull         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,9 @@
 
 static t_img	*get_texture(t_game *game, t_ray *ray)
 {
+	if (game->map.grid[ray->map_y][ray->map_x] == '2')
+		return (&game->wall_anim.frames[game->wall_anim.current]);
+
 	if (ray->side == 0)
 	{
 		if (ray->step_x > 0)

@@ -6,7 +6,7 @@
 #    By: amacaull <amacaull@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2026/01/22 22:35:31 by ilsadi            #+#    #+#              #
-#    Updated: 2026/01/30 10:00:35 by amacaull         ###   ########.fr        #
+#    Updated: 2026/01/30 17:13:45 by amacaull         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -17,49 +17,61 @@ CFLAGS      = -Wall -Wextra -Werror -g
 SRC_DIR     = src
 OBJ_DIR     = obj
 INC_DIR     = includes
-
 LIBFT_PATH  = libft
 LIBFT       = $(LIBFT_PATH)/libft.a
-MLX_PATH    = mlx
-MLX         = $(MLX_PATH)/libmlx.a
 
-#Linux
-# MLX_FLAGS    = -L$(MLX_DIR) -lmlx -lXext -lX11 -lm
-# MLX_LIB = $(MLX_DIR)/libmlx_Linux.a
-# MLX_DIR = ./mlx
-# MLX_REPO = https://github.com/42Paris/minilibx-linux.git
-# $(MLX_LIB):
-#       @if [ ! -d "$(MLX_DIR)" ]; then \
-#               echo "$(YELLOW)[INFO] MinilibX not found, cloning...$(RESET)"; \
-#               git clone $(MLX_REPO) $(MLX_DIR); \
-#       fi
-#       @echo "$(YELLOW)[INFO] Compiling MinilibX...$(RESET)"
-#       @make -C $(MLX_DIR)
+UNAME_S := $(shell uname -s)
 
+ifeq ($(UNAME_S), Linux)
+	# === LINUX CONFIG ===
+	# Nom du dossier pour la MLX Linux (pour ne pas écraser la version Mac)
+	MLX_DIR     = minilibx-linux
+	MLX_REPO    = https://github.com/42Paris/minilibx-linux.git
+	MLX_LIB     = $(MLX_DIR)/libmlx.a
+	# Flags pour lier la MLX sous Linux
+	MLX_FLAGS   = -L$(MLX_DIR) -lmlx -lXext -lX11 -lm -lz
+	# Includes
+	INCLUDES    = -I $(INC_DIR) -I $(LIBFT_PATH)/include -I $(MLX_DIR)
+else
+	# === MAC CONFIG ===
+	# Dossier existant pour Mac
+	MLX_DIR     = mlx
+	MLX_LIB     = $(MLX_DIR)/libmlx.a
+	# Flags pour Mac
+	MLX_FLAGS   = -L$(MLX_DIR) -lmlx -framework OpenGL -framework AppKit -lm
+	# Includes
+	INCLUDES    = -I $(INC_DIR) -I $(LIBFT_PATH)/include -I $(MLX_DIR)
+endif
 
-INCLUDES    = -I $(INC_DIR) -I $(LIBFT_PATH)/include -I $(MLX_PATH)
-LIBS        = $(LIBFT) -L$(MLX_PATH) -lmlx -framework OpenGL -framework AppKit -lm
-
-SRCS        = src/game/main.c \
-			  src/game/init.c \
-			  src/game/clean.c \
-			  src/game/keys.c \
-			  src/game/mouse.c \
-			  src/game/game_loop.c \
-			  src/game/player.c \
-			  src/game/player_utils.c \
+SRCS        = src/core/main.c \
+			  src/core/init.c \
+			  src/core/clean.c \
+			  src/core/loop.c \
+			  \
+			  src/input/keys.c \
+			  src/input/mouse.c \
+			  \
 			  src/parsing/parsing.c \
 			  src/parsing/parsing_config.c \
 			  src/parsing/parsing_validate.c \
 			  src/parsing/parsing_walls.c \
 			  src/parsing/parsing_utils.c \
 			  src/parsing/color.c \
-			  src/rendering/raycasting.c \
-			  src/rendering/raycasting_utils.c \
-			  src/rendering/textures.c \
-			  src/rendering/minimap.c \
-			  src/rendering/floor_ceiling.c \
-			  src/rendering/shading.c
+			  \
+			  src/player/move.c \
+			  src/player/utils.c \
+			  src/player/stats.c \
+			  \
+			  src/raycast/raycasting.c \
+			  src/raycast/utils.c \
+			  \
+			  src/render/textures.c \
+			  src/render/animation.c \
+			  src/render/background.c \
+			  src/render/shading.c \
+			  \
+			  src/ui/hud.c \
+			  src/ui/minimap.c
 
 OBJS        = $(SRCS:%.c=$(OBJ_DIR)/%.o)
 
@@ -80,12 +92,26 @@ CLEAR_LINE  = \033[2K
 
 all:
 	@$(MAKE) -C $(LIBFT_PATH) --no-print-directory
-	@$(MAKE) -C $(MLX_PATH) --no-print-directory 2>/dev/null
+	@if [ ! -d "$(MLX_DIR)" ]; then \
+		echo "$(C_YELLOW)[INFO] MinilibX not found. Cloning $(MLX_REPO)...$(C_RESET)"; \
+		git clone $(MLX_REPO) $(MLX_DIR) > /dev/null 2>&1; \
+	fi
+	@if [ ! -f "$(MLX_LIB)" ]; then \
+		printf "$(C_YELLOW)[INFO] Compiling MinilibX...$(C_RESET)"; \
+		$(MAKE) -C $(MLX_DIR) > /dev/null 2>&1; \
+		printf "\r$(CLEAR_LINE)$(C_GREEN)[INFO] MinilibX compiled successfully! ✓$(C_RESET)\n"; \
+	fi
 	@$(MAKE) header CURR_TOTAL=$(words $(SRCS)) --no-print-directory
 	@$(MAKE) $(NAME) --no-print-directory
 
-$(NAME): $(OBJS)
-	@$(CC) $(CFLAGS) $(OBJS) $(LIBS) -o $(NAME)
+$(MLX_LIB):
+	@if [ ! -d "$(MLX_DIR)" ]; then \
+		git clone $(MLX_REPO) $(MLX_DIR) > /dev/null 2>&1; \
+	fi
+	@$(MAKE) -C $(MLX_DIR) > /dev/null 2>&1
+
+$(NAME): $(MLX_LIB) $(OBJS)
+	@$(CC) $(CFLAGS) $(OBJS) $(LIBFT) $(MLX_FLAGS) -o $(NAME)
 	@$(MAKE) footer --no-print-directory
 
 header:
@@ -146,7 +172,7 @@ $(OBJ_DIR)/%.o: %.c
 
 clean:
 	@make clean -C $(LIBFT_PATH) --no-print-directory
-	@make clean -C $(MLX_PATH) --no-print-directory 2>/dev/null
+	@if [ -d "$(MLX_DIR)" ]; then make clean -C $(MLX_DIR) > /dev/null 2>&1; fi
 	@rm -rf $(OBJ_DIR)
 	@echo ""
 	@printf "    $(C_CYAN)──────────────────────────────────────────$(C_RESET)\n"
@@ -156,9 +182,9 @@ clean:
 
 fclean:
 	@make fclean -C $(LIBFT_PATH) --no-print-directory
-	@make clean -C $(MLX_PATH) --no-print-directory 2>/dev/null
 	@rm -rf $(OBJ_DIR)
 	@rm -f $(NAME)
+#    @if [ "$(UNAME_S)" = "Linux" ]; then rm -rf $(MLX_DIR); fi
 	@echo ""
 	@printf "    $(C_CYAN)──────────────────────────────────────────$(C_RESET)\n"
 	@printf "    $(C_ORANGE)✗ $(C_GRAY)Cleaned $(C_WHITE)cub3D $(C_GRAY)objects$(C_RESET)\n"

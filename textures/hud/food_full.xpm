@@ -1,0 +1,25 @@
+/* XPM */
+static char *food_full[] = {
+/* columns rows colors chars-per-pixel */
+"9 9 10 1 ",
+"  c None",
+". c #613C1B",
+"X c #7B512D",
+"o c #B21818",
+"O c #D42A2A",
+"+ c #9D6D43",
+"@ c #B88458",
+"# c #DFB18F",
+"$ c #E2D5AA",
+"% c #FFF7DC",
+/* pixels */
+"         ",
+"  Oo     ",
+" O#O@    ",
+" oO@+@   ",
+"  .X++   ",
+"   .XX   ",
+"      $  ",
+"       % ",
+"         "
+};

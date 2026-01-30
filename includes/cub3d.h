@@ -6,7 +6,7 @@
 /*   By: amacaull <amacaull@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/07 13:15:35 by ilsadi            #+#    #+#             */
-/*   Updated: 2026/01/30 15:20:26 by amacaull         ###   ########.fr       */
+/*   Updated: 2026/01/30 17:24:10 by amacaull         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,26 +21,37 @@
 # include <mlx.h>
 # include "../libft/include/libft_ultimate.h"
 
+// CORE
 # define WIDTH 1280
 # define HEIGHT 720
 
-// PLAYER
+// PLAYER PHYSICS
 # define MOVE_SPEED 0.025
-# define SPRINT_SPEED 0.05
+# define SPRINT_SPEED 0.030
 # define ROT_SPEED 0.03
 
-// MINIMAP
-#define MINI_SCALE 8
-#define MINI_OFFSET 8
-#define MINI_PLAYER 0xFF0000
-#define MINI_WALL 0x000000
-#define MINI_FLOOR 0xFFFFFF
-#define MINI_BG 0x000000
-#define MINI_BORDER 0xFFFFFF
+// PLAYER STATS
+# define HUNGER_DRAIN 5
+# define HUNGER_THRESHOLD 200
 
-// SHADING
+// RENDER & SHADING
 # define MAX_VIEW_DIST 3.0
 
+// ANIMATION
+# define ANIM_SPEED 10 // Plus c'est haut plus c'est lent
+# define ANIM_FRAMES 4 // Nombre exact de frames d'animation (textures/anim/0.xpm & textures/anim/1.xpm...)
+
+// UI
+# define HUD_SCALE 3
+# define MINI_SCALE 8
+# define MINI_OFFSET 8
+# define MINI_PLAYER 0xFF0000
+# define MINI_WALL 0x000000
+# define MINI_FLOOR 0xFFFFFF
+# define MINI_BG 0x000000
+# define MINI_BORDER 0xFFFFFF
+
+// KEYS
 # ifdef __linux__
 #  define KEY_ESC 65307
 #  define KEY_W 119
@@ -61,7 +72,8 @@
 #  define KEY_RIGHT 124
 #  define KEY_E 14
 #  define KEY_SHIFT 257
-#endif
+# endif
+
 typedef struct s_img
 {
 	void	*img;
@@ -73,6 +85,14 @@ typedef struct s_img
 	int		height;
 }	t_img;
 
+typedef struct s_anim
+{
+	t_img	*frames;
+	int		count;
+	int		current;
+	int		timer;
+}	t_anim;
+
 typedef struct s_map
 {
 	char	**grid;
@@ -81,19 +101,23 @@ typedef struct s_map
 	int		rows;
 }	t_map;
 
+typedef struct s_keys
+{
+	int	w;
+	int	a;
+	int	s;
+	int	d;
+	int	left;
+	int	right;
+	int	shift;
+}	t_keys;
+
 typedef struct s_player
 {
 	double	x;
 	double	y;
 	double	angle;
-	int		move_forward;
-	int		move_backward;
-	int		move_left;
-	int		move_right;
-	int		rotate_left;
-	int		rotate_right;
 	int		pitch;
-	int     is_sprinting;
 }	t_player;
 
 typedef struct s_ray
@@ -125,6 +149,7 @@ typedef struct s_ray
 	double	tex_pos;
 }	t_ray;
 
+// Structure pour le sol et le plafond (Manquante précédemment)
 typedef struct s_floor
 {
 	float	ray_dir_x0;
@@ -162,6 +187,22 @@ typedef struct s_tex
 	int		use_ceil_tex;
 }	t_tex;
 
+typedef struct s_hud
+{
+	t_img	hotbar;
+	t_img	selector;
+	t_img	offhand;
+	t_img	heart_full;
+	t_img	heart_empty;
+	t_img	food_full;
+	t_img	food_empty;
+	t_img	torch;
+	int		health;
+	int		food;
+	int		slot;
+	int		food_timer;
+}	t_hud;
+
 typedef struct s_game
 {
 	void		*mlx;
@@ -171,18 +212,51 @@ typedef struct s_game
 	t_player	player;
 	t_ray		ray;
 	t_tex		tex;
+	t_hud		hud;
+	t_anim		wall_anim;
+	t_keys		keys;
 }	t_game;
 
-// GAME INIT & LOOP
+// CORE
 int		game_loop(t_game *game);
 void	set_img(t_game *game);
 void	put_pixel(t_img *img, int x, int y, int color);
 int		clean_everything(t_game *game);
+void	ft_free_tab(char **tab);
 
-// INPUT HANDLING
+// INPUT
+void	init_keys(t_game *game);
 int		handle_keypress(int keycode, t_game *game);
 int		handle_keyrelease(int keycode, t_game *game);
 int		handle_mouse(int x, int y, t_game *game);
+
+// PLAYER
+void	init_player_direction(t_game *game);
+void	update_player(t_game *game);
+int		is_wall(t_game *game, double x, double y);
+void	update_metabolism(t_game *game);
+
+// RAYCAST
+void	render_frame(t_game *game);
+void	init_ray(t_game *game, t_ray *ray, int x);
+void	init_step(t_game *game, t_ray *ray);
+void	perform_dda(t_game *game, t_ray *ray);
+void	calc_wall_params(t_game *game, t_ray *ray);
+
+// RENDER
+int		load_textures(t_game *game);
+void	free_textures(t_game *game);
+void	init_animations(t_game *game);
+void	update_animation(t_game *game);
+void	free_animations(t_game *game);
+void	render_floor_ceiling(t_game *game);
+int		apply_shading(int color, double distance);
+
+// UI
+void	init_hud(t_game *game);
+void	render_hud(t_game *game);
+void	free_hud(t_game *game);
+void	render_minimap(t_game *game);
 
 // PARSING
 int		parse_cub_file(t_game *game, char *filename);
@@ -193,40 +267,10 @@ int		validate_map(t_game *game);
 int		normalize_map(t_game *game);
 int		check_map_closed(t_game *game);
 int		store_map_line(t_game *game, char **tmp, char *line);
-
-// PARSING UTILS
 int		error_msg(char *msg);
 void	skip_whitespace(char **str);
 int		is_map_line(char *line);
 int		is_blank_line(char *line);
 int		has_cub_extension(char *filename);
-
-// PLAYER
-void	init_player_direction(t_game *game);
-void	update_player(t_game *game);
-int		is_wall(t_game *game, double x, double y);
-
-// RAYCASTING
-void	render_frame(t_game *game);
-void	init_ray(t_game *game, t_ray *ray, int x);
-void	init_step(t_game *game, t_ray *ray);
-void	perform_dda(t_game *game, t_ray *ray);
-void	calc_wall_params(t_game *game, t_ray *ray);
-
-// TEXTURES
-int		load_textures(t_game *game);
-void	free_textures(t_game *game);
-
-// FLOORS & CEILINGS
-void	render_floor_ceiling(t_game *game);
-
-// MINIMAP
-void	render_minimap(t_game *game);
-
-// SHADING
-int     apply_shading(int color, double distance);
-
-// UTILS
-void	ft_free_tab(char **tab);
 
 #endif

@@ -1,0 +1,18 @@
+/* XPM */
+static char *food_empty[] = {
+/* columns rows colors chars-per-pixel */
+"9 9 3 1 ",
+"  c None",
+". c black",
+"X c #282828",
+/* pixels */
+"  ..     ",
+" .XX.    ",
+".XXXX.   ",
+".XXXXX.  ",
+" .XXXX.  ",
+"  .XXX.  ",
+"   ...X..",
+"      .X.",
+"      .. "
+};

@@ -1,24 +1,35 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   game_loop.c                                        :+:      :+:    :+:   */
+/*   stats.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: amacaull <amacaull@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2026/01/28 10:15:46 by amacaull          #+#    #+#             */
-/*   Updated: 2026/01/29 23:36:05 by amacaull         ###   ########.fr       */
+/*   Created: 2026/01/30 16:51:05 by amacaull          #+#    #+#             */
+/*   Updated: 2026/01/30 17:25:14 by amacaull         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "cub3d.h"
 
-int	game_loop(t_game *game)
+void	update_metabolism(t_game *game)
 {
-	update_player(game);
-	if (game->tex.use_floor_tex || game->tex.use_ceil_tex)
-		render_floor_ceiling(game);
-	render_frame(game);
-	render_minimap(game);
-	mlx_put_image_to_window(game->mlx, game->win, game->img.img, 0, 0);
-	return (0);
+	int	is_moving;
+
+	is_moving = (game->keys.w || game->keys.s || game->keys.a || game->keys.d);
+	if (is_moving && game->keys.shift && game->hud.food > 0)
+	{
+		game->hud.food_timer += HUNGER_DRAIN;
+		if (game->hud.food_timer >= HUNGER_THRESHOLD)
+		{
+			game->hud.food--;
+			game->hud.food_timer = 0;
+		}
+	}
+	else
+	{
+		game->hud.food_timer = 0;
+	}
+	if (game->hud.food < 0)
+		game->hud.food = 0;
 }
