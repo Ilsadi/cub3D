@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   cub3d.h                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: amacaull <amacaull@student.42.fr>          +#+  +:+       +#+        */
+/*   By: ilsadi <ilsadi@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/07 13:15:35 by ilsadi            #+#    #+#             */
-/*   Updated: 2026/01/30 20:19:08 by amacaull         ###   ########.fr       */
+/*   Updated: 2026/01/31 01:38:49 by ilsadi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,7 +39,7 @@
 
 // ANIMATION
 # define ANIM_SPEED 10 // Plus c'est haut plus c'est lent
-# define ANIM_FRAMES 4 // Nombre exact de frames d'animation (textures/anim/0.xpm & textures/anim/1.xpm...)
+# define ANIM_FRAMES 120 // Nombre exact de frames d'animation (textures/anim/0.xpm & textures/anim/1.xpm...)
 
 // UI
 # define HUD_SCALE 3
