@@ -6,7 +6,7 @@
 /*   By: amacaull <amacaull@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/27 03:59:30 by amacaull          #+#    #+#             */
-/*   Updated: 2026/01/30 16:38:54 by amacaull         ###   ########.fr       */
+/*   Updated: 2026/01/31 07:07:12 by amacaull         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,7 @@ static int	has_valid_chars(t_game *game)
 		while (game->map.grid[i][++j])
 		{
 			c = game->map.grid[i][j];
-		if (c != '0' && c != '1' && c != '2' && c != 'N' // Ajoute '2' ici
+		if (c != '0' && c != '1' && c != '2' && c != 'N'
     		&& c != 'S' && c != 'E' && c != 'W' && c != ' ' && c != '\t')
     		return (error_msg("Invalid character in map"), 0);
 		}

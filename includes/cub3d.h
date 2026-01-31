@@ -6,7 +6,7 @@
 /*   By: amacaull <amacaull@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/07 13:15:35 by ilsadi            #+#    #+#             */
-/*   Updated: 2026/01/31 07:05:42 by amacaull         ###   ########.fr       */
+/*   Updated: 2026/01/31 07:09:31 by amacaull         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,7 +36,7 @@
 # define MOUSE_SENSITIVITY 0.002
 
 // RENDER & SHADING
-# define MAX_VIEW_DIST 20.0
+# define MAX_VIEW_DIST 3.0
 
 // ANIMATION
 # define ANIM_SPEED 10 // Plus c'est haut plus c'est lent
