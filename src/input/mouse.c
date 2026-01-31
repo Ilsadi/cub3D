@@ -6,13 +6,11 @@
 /*   By: amacaull <amacaull@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/30 09:05:30 by amacaull          #+#    #+#             */
-/*   Updated: 2026/01/30 17:06:29 by amacaull         ###   ########.fr       */
+/*   Updated: 2026/01/31 07:05:14 by amacaull         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "cub3d.h"
-
-#define MOUSE_SENSITIVITY 0.002
 
 static void	update_vectors_from_angle(t_game *game)
 {

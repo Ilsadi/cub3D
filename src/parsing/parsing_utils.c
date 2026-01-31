@@ -6,7 +6,7 @@
 /*   By: amacaull <amacaull@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/27 04:00:13 by amacaull          #+#    #+#             */
-/*   Updated: 2026/01/30 09:23:40 by amacaull         ###   ########.fr       */
+/*   Updated: 2026/01/31 07:04:32 by amacaull         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,7 +33,7 @@ int	is_map_line(char *line)
 	i = 0;
 	while (line[i] == ' ' || line[i] == '\t')
 		i++;
-	if (line[i] == '1' || line[i] == '0')
+	if (line[i] == '2' || line[i] == '1' || line[i] == '0')
 		return (1);
 	if ((line[i] == 'N' || line[i] == 'S' || line[i] == 'E' || line[i] == 'W')
 		&& (line[i + 1] == '0' || line[i + 1] == '1' || line[i + 1] == ' '

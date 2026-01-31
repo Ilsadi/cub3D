@@ -6,7 +6,7 @@
 /*   By: amacaull <amacaull@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/27 03:59:44 by amacaull          #+#    #+#             */
-/*   Updated: 2026/01/28 10:16:55 by amacaull         ###   ########.fr       */
+/*   Updated: 2026/01/31 07:03:41 by amacaull         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,8 +66,9 @@ static int	flood_fill(char **map, int x, int y, t_game *game)
 		return (0);
 	if (map[y][x] == ' ')
 		return (0);
-	if (map[y][x] == '1' || map[y][x] == 'V')
+	if (map[y][x] == '1' || map[y][x] == '2' || map[y][x] == 'V')
 		return (1);
+
 	map[y][x] = 'V';
 	if (!flood_fill(map, x + 1, y, game))
 		return (0);

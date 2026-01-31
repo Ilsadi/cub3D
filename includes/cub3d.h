@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   cub3d.h                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ilsadi <ilsadi@student.42.fr>              +#+  +:+       +#+        */
+/*   By: amacaull <amacaull@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/07 13:15:35 by ilsadi            #+#    #+#             */
-/*   Updated: 2026/01/31 01:38:49 by ilsadi           ###   ########.fr       */
+/*   Updated: 2026/01/31 07:05:42 by amacaull         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,17 +25,18 @@
 # define WIDTH 1280
 # define HEIGHT 720
 
-// PLAYER PHYSICS
+// PLAYER
 # define MOVE_SPEED 0.025
 # define SPRINT_SPEED 0.040
 # define ROT_SPEED 0.03
-
-// PLAYER STATS
 # define HUNGER_DRAIN 5
 # define HUNGER_THRESHOLD 200
 
+// MOUSE
+# define MOUSE_SENSITIVITY 0.002
+
 // RENDER & SHADING
-# define MAX_VIEW_DIST 3.0
+# define MAX_VIEW_DIST 20.0
 
 // ANIMATION
 # define ANIM_SPEED 10 // Plus c'est haut plus c'est lent

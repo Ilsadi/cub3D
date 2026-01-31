@@ -6,7 +6,7 @@
 /*   By: amacaull <amacaull@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/30 09:22:41 by amacaull          #+#    #+#             */
-/*   Updated: 2026/01/30 17:24:59 by amacaull         ###   ########.fr       */
+/*   Updated: 2026/01/31 06:54:29 by amacaull         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,6 +60,8 @@ void	init_step(t_game *game, t_ray *ray)
 
 void	perform_dda(t_game *game, t_ray *ray)
 {
+	char	cell;
+
 	while (ray->hit == 0)
 	{
 		if (ray->side_dist_x < ray->side_dist_y)
@@ -75,9 +77,12 @@ void	perform_dda(t_game *game, t_ray *ray)
 			ray->side = 1;
 		}
 		if (ray->map_y >= 0 && ray->map_y < game->map.height
-			&& ray->map_x >= 0 && ray->map_x < game->map.width
-			&& game->map.grid[ray->map_y][ray->map_x] == '1')
-			ray->hit = 1;
+			&& ray->map_x >= 0 && ray->map_x < game->map.width)
+		{
+			cell = game->map.grid[ray->map_y][ray->map_x];
+			if (cell == '1' || cell == '2')
+				ray->hit = 1;
+		}
 	}
 }
 
