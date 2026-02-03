@@ -6,11 +6,33 @@
 /*   By: amacaull <amacaull@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/09 15:16:45 by ilsadi            #+#    #+#             */
-/*   Updated: 2026/01/30 16:59:48 by amacaull         ###   ########.fr       */
+/*   Updated: 2026/02/03 21:07:00 by amacaull         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "cub3d.h"
+
+static void	handle_hotbar_keys(int keycode, t_game *game)
+{
+	if (keycode == KEY_1)
+		game->hud.slot = 0;
+	else if (keycode == KEY_2)
+		game->hud.slot = 1;
+	else if (keycode == KEY_3)
+		game->hud.slot = 2;
+	else if (keycode == KEY_4)
+		game->hud.slot = 3;
+	else if (keycode == KEY_5)
+		game->hud.slot = 4;
+	else if (keycode == KEY_6)
+		game->hud.slot = 5;
+	else if (keycode == KEY_7)
+		game->hud.slot = 6;
+	else if (keycode == KEY_8)
+		game->hud.slot = 7;
+	else if (keycode == KEY_9)
+		game->hud.slot = 8;
+}
 
 int	handle_keypress(int keycode, t_game *game)
 {
@@ -30,6 +52,9 @@ int	handle_keypress(int keycode, t_game *game)
 		game->keys.right = 1;
 	if (keycode == KEY_SHIFT)
 		game->keys.shift = 1;
+	if (keycode == KEY_E)
+		handle_interaction(game);
+	handle_hotbar_keys(keycode, game);
 	return (0);
 }
 

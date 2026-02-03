@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   utils.c                                            :+:      :+:    :+:   */
+/*   raycast_utils.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: amacaull <amacaull@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/30 09:22:41 by amacaull          #+#    #+#             */
-/*   Updated: 2026/01/31 06:54:29 by amacaull         ###   ########.fr       */
+/*   Updated: 2026/02/03 21:43:06 by amacaull         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -80,7 +80,7 @@ void	perform_dda(t_game *game, t_ray *ray)
 			&& ray->map_x >= 0 && ray->map_x < game->map.width)
 		{
 			cell = game->map.grid[ray->map_y][ray->map_x];
-			if (cell == '1' || cell == '2')
+			if (cell == '1' || cell == '2' || cell == 'D')
 				ray->hit = 1;
 		}
 	}

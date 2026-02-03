@@ -6,7 +6,7 @@
 /*   By: amacaull <amacaull@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/30 15:16:09 by amacaull          #+#    #+#             */
-/*   Updated: 2026/01/30 20:13:35 by amacaull         ###   ########.fr       */
+/*   Updated: 2026/02/03 21:27:03 by amacaull         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,7 +61,8 @@ static void	draw_scaled_pixel(t_game *game, int x, int y, int color)
 	}
 }
 
-static void	draw_sprite_scaled(t_game *game, t_img *sprite, int start_x, int start_y)
+static void	draw_sprite_scaled(t_game *game, t_img *sprite, int start_x,
+	int start_y)
 {
 	int	x;
 	int	y;
@@ -129,6 +130,59 @@ static void	draw_crosshair(t_game *game)
 	}
 }
 
+static void	draw_icon_in_slot(t_game *game, t_img *icon, int slot_x, int slot_y)
+{
+	int	x;
+	int	y;
+	int	color;
+	int	scale;
+
+	if (!icon->img)
+		return ;
+	scale = 2;
+	y = 0;
+	while (y < icon->height)
+	{
+		x = 0;
+		while (x < icon->width)
+		{
+			color = icon->addr[y * icon->width + x];
+			if ((color & 0x00FFFFFF) != 0)
+			{
+				put_pixel(&game->img, slot_x + x * scale, slot_y + y * scale,
+					color);
+				put_pixel(&game->img, slot_x + x * scale + 1, slot_y + y * scale,
+					color);
+				put_pixel(&game->img, slot_x + x * scale, slot_y + y * scale + 1,
+					color);
+				put_pixel(&game->img, slot_x + x * scale + 1,
+					slot_y + y * scale + 1, color);
+			}
+			x++;
+		}
+		y++;
+	}
+}
+
+static void	render_inventory(t_game *game, int hotbar_x, int hotbar_y)
+{
+	int	i;
+	int	slot_x;
+	int	slot_y;
+
+	i = 0;
+	while (i < HOTBAR_SLOTS)
+	{
+		if (game->hud.inventory[i] == ITEM_KEY && game->hud.key_icon.img)
+		{
+			slot_x = hotbar_x + (3 * HUD_SCALE) + (i * 20 * HUD_SCALE);
+			slot_y = hotbar_y + (3 * HUD_SCALE);
+			draw_icon_in_slot(game, &game->hud.key_icon, slot_x, slot_y);
+		}
+		i++;
+	}
+}
+
 void	render_hud(t_game *game)
 {
 	int	hotbar_x;
@@ -149,6 +203,7 @@ void	render_hud(t_game *game)
 	draw_sprite_scaled(game, &game->hud.torch,
 		hotbar_x - offhand_gap + (3 * HUD_SCALE),
 		hotbar_y + (3 * HUD_SCALE));
+	render_inventory(game, hotbar_x, hotbar_y);
 	render_stats(game, hotbar_x, hotbar_y - (12 * HUD_SCALE));
 	draw_crosshair(game);
 }

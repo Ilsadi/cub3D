@@ -6,7 +6,7 @@
 /*   By: amacaull <amacaull@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/07 13:15:35 by ilsadi            #+#    #+#             */
-/*   Updated: 2026/01/31 07:09:31 by amacaull         ###   ########.fr       */
+/*   Updated: 2026/02/03 21:44:10 by amacaull         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,14 +33,14 @@
 # define HUNGER_THRESHOLD 200
 
 // MOUSE
-# define MOUSE_SENSITIVITY 0.002
+# define MOUSE_SENSITIVITY 0.003
 
 // RENDER & SHADING
 # define MAX_VIEW_DIST 3.0
 
 // ANIMATION
-# define ANIM_SPEED 10 // Plus c'est haut plus c'est lent
-# define ANIM_FRAMES 120 // Nombre exact de frames d'animation (textures/anim/0.xpm & textures/anim/1.xpm...)
+# define ANIM_SPEED 10
+# define ANIM_FRAMES 120
 
 // UI
 # define HUD_SCALE 3
@@ -51,6 +51,19 @@
 # define MINI_FLOOR 0xFFFFFF
 # define MINI_BG 0x000000
 # define MINI_BORDER 0xFFFFFF
+# define MINI_DOOR 0x8B4513
+# define MINI_KEY 0xFFD700
+
+// DOORS
+# define DOOR_FRAMES 4
+# define DOOR_RANGE 1.5
+# define MAX_DOORS 64
+
+// ITEMS
+# define MAX_COLLECTIBLES 64
+# define ITEM_NONE 0
+# define ITEM_KEY 1
+# define HOTBAR_SLOTS 9
 
 // KEYS
 # ifdef __linux__
@@ -63,6 +76,15 @@
 #  define KEY_RIGHT 65363
 #  define KEY_E 101
 #  define KEY_SHIFT 65505
+#  define KEY_1 49
+#  define KEY_2 50
+#  define KEY_3 51
+#  define KEY_4 52
+#  define KEY_5 53
+#  define KEY_6 54
+#  define KEY_7 55
+#  define KEY_8 56
+#  define KEY_9 57
 # else
 #  define KEY_ESC 53
 #  define KEY_W 13
@@ -73,6 +95,15 @@
 #  define KEY_RIGHT 124
 #  define KEY_E 14
 #  define KEY_SHIFT 257
+#  define KEY_1 18
+#  define KEY_2 19
+#  define KEY_3 20
+#  define KEY_4 21
+#  define KEY_5 23
+#  define KEY_6 22
+#  define KEY_7 26
+#  define KEY_8 28
+#  define KEY_9 25
 # endif
 
 typedef struct s_img
@@ -150,7 +181,6 @@ typedef struct s_ray
 	double	tex_pos;
 }	t_ray;
 
-// Structure pour le sol et le plafond (Manquante précédemment)
 typedef struct s_floor
 {
 	float	ray_dir_x0;
@@ -198,24 +228,58 @@ typedef struct s_hud
 	t_img	food_full;
 	t_img	food_empty;
 	t_img	torch;
+	t_img	key_icon;
 	int		health;
 	int		food;
 	int		slot;
 	int		food_timer;
+	int		inventory[HOTBAR_SLOTS];
 }	t_hud;
+
+typedef struct s_door
+{
+	int		x;
+	int		y;
+	int		state;
+	int		open;
+}	t_door;
+
+typedef struct s_doors
+{
+	t_img	frames[DOOR_FRAMES];
+	t_door	list[MAX_DOORS];
+	int		count;
+}	t_doors;
+
+typedef struct s_collectible
+{
+	int		x;
+	int		y;
+	int		type;
+	int		collected;
+}	t_collectible;
+
+typedef struct s_collectibles
+{
+	t_collectible	list[MAX_COLLECTIBLES];
+	int				count;
+	t_img			key_tex;
+}	t_collectibles;
 
 typedef struct s_game
 {
-	void		*mlx;
-	void		*win;
-	t_img		img;
-	t_map		map;
-	t_player	player;
-	t_ray		ray;
-	t_tex		tex;
-	t_hud		hud;
-	t_anim		wall_anim;
-	t_keys		keys;
+	void			*mlx;
+	void			*win;
+	t_img			img;
+	t_map			map;
+	t_player		player;
+	t_ray			ray;
+	t_tex			tex;
+	t_hud			hud;
+	t_anim			wall_anim;
+	t_keys			keys;
+	t_doors			doors;
+	t_collectibles	collectibles;
 }	t_game;
 
 // CORE
@@ -273,5 +337,23 @@ void	skip_whitespace(char **str);
 int		is_map_line(char *line);
 int		is_blank_line(char *line);
 int		has_cub_extension(char *filename);
+
+// DOORS
+void	init_doors(t_game *game);
+void	free_doors(t_game *game);
+t_img	*get_door_texture(t_game *game, int x, int y);
+t_door	*get_door_at(t_game *game, int x, int y);
+int		is_door(t_game *game, int x, int y);
+
+// COLLECTIBLES
+void	init_collectibles(t_game *game);
+void	free_collectibles(t_game *game);
+void	update_collectibles(t_game *game);
+int		add_item_to_inventory(t_game *game, int item_type);
+int		has_item_selected(t_game *game, int item_type);
+void	use_selected_item(t_game *game);
+
+// INTERACTION
+void	handle_interaction(t_game *game);
 
 #endif

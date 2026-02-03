@@ -6,11 +6,24 @@
 /*   By: amacaull <amacaull@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/27 03:59:30 by amacaull          #+#    #+#             */
-/*   Updated: 2026/01/31 07:07:12 by amacaull         ###   ########.fr       */
+/*   Updated: 2026/02/03 21:07:16 by amacaull         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "cub3d.h"
+
+static int	is_valid_map_char(char c)
+{
+	if (c == '0' || c == '1' || c == '2')
+		return (1);
+	if (c == 'N' || c == 'S' || c == 'E' || c == 'W')
+		return (1);
+	if (c == ' ' || c == '\t')
+		return (1);
+	if (c == 'D' || c == 'K')
+		return (1);
+	return (0);
+}
 
 static int	has_valid_chars(t_game *game)
 {
@@ -25,9 +38,8 @@ static int	has_valid_chars(t_game *game)
 		while (game->map.grid[i][++j])
 		{
 			c = game->map.grid[i][j];
-		if (c != '0' && c != '1' && c != '2' && c != 'N'
-    		&& c != 'S' && c != 'E' && c != 'W' && c != ' ' && c != '\t')
-    		return (error_msg("Invalid character in map"), 0);
+			if (!is_valid_map_char(c))
+				return (error_msg("Invalid character in map"), 0);
 		}
 	}
 	return (1);

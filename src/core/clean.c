@@ -6,7 +6,7 @@
 /*   By: amacaull <amacaull@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/09 15:13:26 by ilsadi            #+#    #+#             */
-/*   Updated: 2026/01/30 16:40:24 by amacaull         ###   ########.fr       */
+/*   Updated: 2026/02/03 21:09:43 by amacaull         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,14 +42,11 @@ int	clean_everything(t_game *game)
 		mlx_destroy_image(game->mlx, game->img.img);
 	free_hud(game);
 	free_animations(game);
+	free_doors(game);
+	free_collectibles(game);
 	free_texture_images(game);
 	if (game->win)
 		mlx_destroy_window(game->mlx, game->win);
-// 	if (game->mlx)
-// 	{
-// 		mlx_destroy_display(game->mlx);
-// 		free(game->mlx);
-// 	}
 	free_texture_paths(game);
 	if (game->map.grid)
 		ft_free_tab(game->map.grid);

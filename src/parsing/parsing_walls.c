@@ -6,7 +6,7 @@
 /*   By: amacaull <amacaull@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/27 03:59:44 by amacaull          #+#    #+#             */
-/*   Updated: 2026/01/31 07:03:41 by amacaull         ###   ########.fr       */
+/*   Updated: 2026/02/03 21:26:33 by amacaull         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,16 +60,30 @@ int	normalize_map(t_game *game)
 	return (1);
 }
 
+static int	is_blocking_tile(char c)
+{
+	if (c == '1' || c == '2' || c == 'V' || c == 'D')
+		return (1);
+	return (0);
+}
+
 static int	flood_fill(char **map, int x, int y, t_game *game)
 {
+	char	c;
+
 	if (x < 0 || y < 0 || x >= game->map.width || y >= game->map.height)
 		return (0);
-	if (map[y][x] == ' ')
+	c = map[y][x];
+	if (c == ' ')
 		return (0);
-	if (map[y][x] == '1' || map[y][x] == '2' || map[y][x] == 'V')
+	if (is_blocking_tile(c))
 		return (1);
-
-	map[y][x] = 'V';
+	if (c == 'V' || c == 'v')
+		return (1);
+	if (c == 'K')
+		map[y][x] = 'v';
+	else
+		map[y][x] = 'V';
 	if (!flood_fill(map, x + 1, y, game))
 		return (0);
 	if (!flood_fill(map, x - 1, y, game))
@@ -94,6 +108,8 @@ static void	restore_visited(t_game *game)
 		{
 			if (game->map.grid[y][x] == 'V')
 				game->map.grid[y][x] = '0';
+			else if (game->map.grid[y][x] == 'v')
+				game->map.grid[y][x] = 'K';
 		}
 	}
 }

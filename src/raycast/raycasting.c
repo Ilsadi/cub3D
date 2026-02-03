@@ -6,7 +6,7 @@
 /*   By: amacaull <amacaull@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/27 12:03:57 by amacaull          #+#    #+#             */
-/*   Updated: 2026/01/31 06:54:47 by amacaull         ###   ########.fr       */
+/*   Updated: 2026/02/03 21:07:49 by amacaull         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,8 +14,13 @@
 
 static t_img	*get_texture(t_game *game, t_ray *ray)
 {
-	if (game->map.grid[ray->map_y][ray->map_x] == '2')
+	char	cell;
+
+	cell = game->map.grid[ray->map_y][ray->map_x];
+	if (cell == '2')
 		return (&game->wall_anim.frames[game->wall_anim.current]);
+	if (cell == 'D')
+		return (get_door_texture(game, ray->map_x, ray->map_y));
 	if (ray->side == 0)
 	{
 		if (ray->step_x > 0)

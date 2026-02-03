@@ -6,7 +6,7 @@
 #    By: amacaull <amacaull@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2026/01/22 22:35:31 by ilsadi            #+#    #+#              #
-#    Updated: 2026/01/30 17:13:45 by amacaull         ###   ########.fr        #
+#    Updated: 2026/02/03 21:17:19 by amacaull         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -24,22 +24,16 @@ UNAME_S := $(shell uname -s)
 
 ifeq ($(UNAME_S), Linux)
 	# === LINUX CONFIG ===
-	# Nom du dossier pour la MLX Linux (pour ne pas écraser la version Mac)
 	MLX_DIR     = minilibx-linux
 	MLX_REPO    = https://github.com/42Paris/minilibx-linux.git
 	MLX_LIB     = $(MLX_DIR)/libmlx.a
-	# Flags pour lier la MLX sous Linux
 	MLX_FLAGS   = -L$(MLX_DIR) -lmlx -lXext -lX11 -lm -lz
-	# Includes
 	INCLUDES    = -I $(INC_DIR) -I $(LIBFT_PATH)/include -I $(MLX_DIR)
 else
 	# === MAC CONFIG ===
-	# Dossier existant pour Mac
 	MLX_DIR     = mlx
 	MLX_LIB     = $(MLX_DIR)/libmlx.a
-	# Flags pour Mac
 	MLX_FLAGS   = -L$(MLX_DIR) -lmlx -framework OpenGL -framework AppKit -lm
-	# Includes
 	INCLUDES    = -I $(INC_DIR) -I $(LIBFT_PATH)/include -I $(MLX_DIR)
 endif
 
@@ -63,7 +57,7 @@ SRCS        = src/core/main.c \
 			  src/player/stats.c \
 			  \
 			  src/raycast/raycasting.c \
-			  src/raycast/utils.c \
+			  src/raycast/raycast_utils.c \
 			  \
 			  src/render/textures.c \
 			  src/render/animation.c \
@@ -71,7 +65,11 @@ SRCS        = src/core/main.c \
 			  src/render/shading.c \
 			  \
 			  src/ui/hud.c \
-			  src/ui/minimap.c
+			  src/ui/minimap.c \
+			  \
+			  src/interact/door.c \
+			  src/interact/collectible.c \
+			  src/interact/interaction.c
 
 OBJS        = $(SRCS:%.c=$(OBJ_DIR)/%.o)
 
@@ -184,7 +182,6 @@ fclean:
 	@make fclean -C $(LIBFT_PATH) --no-print-directory
 	@rm -rf $(OBJ_DIR)
 	@rm -f $(NAME)
-#    @if [ "$(UNAME_S)" = "Linux" ]; then rm -rf $(MLX_DIR); fi
 	@echo ""
 	@printf "    $(C_CYAN)──────────────────────────────────────────$(C_RESET)\n"
 	@printf "    $(C_ORANGE)✗ $(C_GRAY)Cleaned $(C_WHITE)cub3D $(C_GRAY)objects$(C_RESET)\n"

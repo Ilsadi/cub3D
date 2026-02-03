@@ -6,7 +6,7 @@
 /*   By: amacaull <amacaull@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/09 14:37:11 by ilsadi            #+#    #+#             */
-/*   Updated: 2026/01/30 17:07:01 by amacaull         ###   ########.fr       */
+/*   Updated: 2026/02/03 21:09:22 by amacaull         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -70,6 +70,8 @@ int	main(int ac, char **av)
 	init_keys(&game);
 	init_hud(&game);
 	init_animations(&game);
+	init_doors(&game);
+	init_collectibles(&game);
 	set_img(&game);
 	init_player_direction(&game);
 	setup_hooks(&game);

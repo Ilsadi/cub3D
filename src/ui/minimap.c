@@ -6,7 +6,7 @@
 /*   By: amacaull <amacaull@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/29 09:23:50 by amacaull          #+#    #+#             */
-/*   Updated: 2026/01/30 15:36:50 by amacaull         ###   ########.fr       */
+/*   Updated: 2026/02/03 21:43:45 by amacaull         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,6 +30,11 @@ static void	draw_square(t_game *game, int x, int y, int color)
 	}
 }
 
+static int	is_blocking_tile(char c)
+{
+	return (c == '1' || c == 'D' || c == '2');
+}
+
 static int	is_visible(t_game *game, double dest_x, double dest_y)
 {
 	double	pos_x;
@@ -50,7 +55,7 @@ static int	is_visible(t_game *game, double dest_x, double dest_y)
 	dy /= steps;
 	while (steps-- > 0)
 	{
-		if (game->map.grid[(int)pos_y][(int)pos_x] == '1')
+		if (is_blocking_tile(game->map.grid[(int)pos_y][(int)pos_x]))
 			return (0);
 		pos_x += dx;
 		pos_y += dy;
@@ -58,20 +63,27 @@ static int	is_visible(t_game *game, double dest_x, double dest_y)
 	return (1);
 }
 
+static int	get_tile_color(t_game *game, int x, int y)
+{
+	char	c;
+
+	c = game->map.grid[y][x];
+	if (c == '1')
+		return (MINI_WALL);
+	if (c == 'D')
+		return (MINI_DOOR);
+	if (c != ' ')
+		return (MINI_FLOOR);
+	return (MINI_BG);
+}
+
 static void	handle_tile(t_game *game, int x, int y)
 {
 	int		color;
 	double	dist;
-	char	c;
 
 	dist = sqrt(pow(game->player.x - x, 2) + pow(game->player.y - y, 2));
-	c = game->map.grid[y][x];
-	if (c == '1')
-		color = MINI_WALL;
-	else if (c != ' ')
-		color = MINI_FLOOR;
-	else
-		color = MINI_BG;
+	color = get_tile_color(game, x, y);
 	if (dist < 3.9)
 	{
 		if (!is_visible(game, x + 0.5, y + 0.5))
@@ -110,23 +122,43 @@ static void	draw_player_icon(t_game *game)
 			p[1] + (int)(d[1] * i), MINI_PLAYER);
 }
 
-void	render_minimap(t_game *game)
+static void	draw_collectibles(t_game *game)
+{
+	int		i;
+	int		px;
+	int		py;
+	double	dist;
+
+	i = 0;
+	while (i < game->collectibles.count)
+	{
+		if (!game->collectibles.list[i].collected)
+		{
+			dist = sqrt(pow(game->player.x - game->collectibles.list[i].x, 2)
+					+ pow(game->player.y - game->collectibles.list[i].y, 2));
+			if (dist < 3.9 && is_visible(game, game->collectibles.list[i].x
+					+ 0.5, game->collectibles.list[i].y + 0.5))
+			{
+				px = MINI_OFFSET + game->collectibles.list[i].x * MINI_SCALE
+					+ MINI_SCALE / 2;
+				py = MINI_OFFSET + game->collectibles.list[i].y * MINI_SCALE
+					+ MINI_SCALE / 2;
+				put_pixel(&game->img, px, py, MINI_KEY);
+				put_pixel(&game->img, px - 1, py, MINI_KEY);
+				put_pixel(&game->img, px + 1, py, MINI_KEY);
+				put_pixel(&game->img, px, py - 1, MINI_KEY);
+				put_pixel(&game->img, px, py + 1, MINI_KEY);
+			}
+		}
+		i++;
+	}
+}
+
+static void	draw_border(t_game *game, int w, int h)
 {
 	int	x;
 	int	y;
-	int	w;
-	int	h;
 
-	y = -1;
-	while (++y < game->map.height)
-	{
-		x = -1;
-		while (++x < game->map.width)
-			handle_tile(game, x, y);
-	}
-	draw_player_icon(game);
-	w = game->map.width * MINI_SCALE;
-	h = game->map.height * MINI_SCALE;
 	x = -2;
 	while (++x < w + 2)
 	{
@@ -141,4 +173,25 @@ void	render_minimap(t_game *game)
 		put_pixel(&game->img, MINI_OFFSET + w + 1, MINI_OFFSET + y,
 			MINI_BORDER);
 	}
+}
+
+void	render_minimap(t_game *game)
+{
+	int	x;
+	int	y;
+	int	w;
+	int	h;
+
+	y = -1;
+	while (++y < game->map.height)
+	{
+		x = -1;
+		while (++x < game->map.width)
+			handle_tile(game, x, y);
+	}
+	draw_collectibles(game);
+	draw_player_icon(game);
+	w = game->map.width * MINI_SCALE;
+	h = game->map.height * MINI_SCALE;
+	draw_border(game, w, h);
 }

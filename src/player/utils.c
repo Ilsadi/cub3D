@@ -6,7 +6,7 @@
 /*   By: amacaull <amacaull@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/30 09:21:48 by amacaull          #+#    #+#             */
-/*   Updated: 2026/01/30 17:25:06 by amacaull         ###   ########.fr       */
+/*   Updated: 2026/02/03 21:16:57 by amacaull         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,8 +14,9 @@
 
 int	is_wall(t_game *game, double x, double y)
 {
-	int	map_x;
-	int	map_y;
+	int		map_x;
+	int		map_y;
+	char	cell;
 
 	if (x < 0 || y < 0)
 		return (1);
@@ -23,9 +24,10 @@ int	is_wall(t_game *game, double x, double y)
 	map_y = (int)y;
 	if (map_x >= game->map.width || map_y >= game->map.height)
 		return (1);
-	if (game->map.grid[map_y][map_x] == '1')
+	cell = game->map.grid[map_y][map_x];
+	if (cell == '1' || cell == '2')
 		return (1);
-	if (game->map.grid[map_y][map_x] == '2')
+	if (cell == 'D')
 		return (1);
 	return (0);
 }
