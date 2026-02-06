@@ -6,7 +6,7 @@
 /*   By: amacaull <amacaull@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/06 08:59:58 by amacaull          #+#    #+#             */
-/*   Updated: 2026/02/06 14:37:53 by amacaull         ###   ########.fr       */
+/*   Updated: 2026/02/06 16:08:11 by amacaull         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,7 +29,7 @@ static void	calc_ender_transform(t_game *game, t_sprite_render *sr,
 	sr->transform_y = inv_det * (-game->ray.plane_y * sprite_x
 			+ game->ray.plane_x * sprite_y);
 	sr->screen_x = (int)((WIDTH / 2) * (1 + sr->transform_x / sr->transform_y));
-	sprite_scale = 0.8;
+	sprite_scale = 1.5;
 	sr->height = abs((int)(HEIGHT / sr->transform_y * sprite_scale));
 	sr->width = abs((int)(HEIGHT / sr->transform_y * sprite_scale * 0.5));
 }
