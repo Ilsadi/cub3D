@@ -6,7 +6,7 @@
 /*   By: amacaull <amacaull@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/06 08:59:58 by amacaull          #+#    #+#             */
-/*   Updated: 2026/02/06 16:08:11 by amacaull         ###   ########.fr       */
+/*   Updated: 2026/02/06 23:10:29 by amacaull         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -94,7 +94,10 @@ static void	render_single_enderman(t_game *game, t_enderman *ender,
 
 	if (!ender->is_active)
 		return ;
-	tex = &game->endermen.texture;
+	if (ender->is_angry && game->endermen.texture_angry.img)
+		tex = &game->endermen.texture_angry;
+	else
+		tex = &game->endermen.texture;
 	if (!tex->img)
 		return ;
 	calc_ender_transform(game, &sr, ender);

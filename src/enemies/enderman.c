@@ -6,7 +6,7 @@
 /*   By: amacaull <amacaull@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/06 08:59:27 by amacaull          #+#    #+#             */
-/*   Updated: 2026/02/06 14:23:22 by amacaull         ###   ########.fr       */
+/*   Updated: 2026/02/06 23:09:50 by amacaull         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,7 +63,7 @@ static int	is_looking_at_enderman(t_game *game, t_enderman *ender)
 	dx = ender->x - game->player.x;
 	dy = ender->y - game->player.y;
 	dist = sqrt(dx * dx + dy * dy);
-	if (dist > 4.0)
+	if (dist > 6.0)
 		return (0);
 	angle_to_ender = atan2(dy, dx);
 	if (angle_to_ender < 0)
@@ -159,6 +159,18 @@ void	init_endermen(t_game *game)
 				&game->endermen.texture.endian);
 	else
 		printf("Warning: Failed to load enderman texture\n");
+	game->endermen.texture_angry.img = mlx_xpm_file_to_image(game->mlx,
+			"textures/enemies/enderman_angry.xpm",
+			&game->endermen.texture_angry.width,
+			&game->endermen.texture_angry.height);
+	if (game->endermen.texture_angry.img)
+		game->endermen.texture_angry.addr = (int *)mlx_get_data_addr(
+				game->endermen.texture_angry.img,
+				&game->endermen.texture_angry.pixel_bits,
+				&game->endermen.texture_angry.size_line,
+				&game->endermen.texture_angry.endian);
+	else
+		printf("Warning: Failed to load angry enderman texture\n");
 	game->hud.invincibility = 0;
 	srand((unsigned int)time(NULL));
 }
@@ -167,4 +179,6 @@ void	free_endermen(t_game *game)
 {
 	if (game->endermen.texture.img)
 		mlx_destroy_image(game->mlx, game->endermen.texture.img);
+	if (game->endermen.texture_angry.img)
+		mlx_destroy_image(game->mlx, game->endermen.texture_angry.img);
 }

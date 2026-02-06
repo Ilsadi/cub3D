@@ -6,7 +6,7 @@
 /*   By: amacaull <amacaull@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/07 13:15:35 by ilsadi            #+#    #+#             */
-/*   Updated: 2026/02/06 15:48:56 by amacaull         ###   ########.fr       */
+/*   Updated: 2026/02/06 23:11:12 by amacaull         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,14 +40,14 @@
 # define MOUSE_SENSITIVITY 0.002
 
 // RENDER & SHADING
-# define MAX_VIEW_DIST 4.0
+# define MAX_VIEW_DIST 8.0
 
 // ANIMATION
 # define ANIM_SPEED 10
 # define ANIM_FRAMES 120
 
 // UI
-# define HUD_SCALE 2.5
+# define HUD_SCALE 3
 # define MINI_SCALE 8
 # define MINI_OFFSET 8
 # define MINI_PLAYER 0xFF0000
@@ -314,6 +314,7 @@ typedef struct s_endermen
 	t_enderman	list[MAX_ENDERMEN];
 	int			count;
 	t_img		texture;
+	t_img		texture_angry;
 }	t_endermen;
 
 typedef struct s_gameover
