@@ -6,7 +6,7 @@
 /*   By: amacaull <amacaull@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/27 12:03:57 by amacaull          #+#    #+#             */
-/*   Updated: 2026/02/03 21:07:49 by amacaull         ###   ########.fr       */
+/*   Updated: 2026/02/06 13:57:33 by amacaull         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -89,7 +89,8 @@ static void	draw_column(t_game *game, int x, t_ray *ray)
 
 void	render_frame(t_game *game)
 {
-	int	x;
+	int		x;
+	double	z_buffer[WIDTH];
 
 	x = 0;
 	while (x < WIDTH)
@@ -99,6 +100,9 @@ void	render_frame(t_game *game)
 		perform_dda(game, &game->ray);
 		calc_wall_params(game, &game->ray);
 		draw_column(game, x, &game->ray);
+		z_buffer[x] = game->ray.perp_wall_dist;
 		x++;
 	}
+	render_sprites(game, z_buffer);
+	render_endermen(game, z_buffer);
 }

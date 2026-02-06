@@ -6,7 +6,7 @@
 /*   By: amacaull <amacaull@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/30 15:16:09 by amacaull          #+#    #+#             */
-/*   Updated: 2026/02/03 21:27:03 by amacaull         ###   ########.fr       */
+/*   Updated: 2026/02/06 13:34:25 by amacaull         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -132,14 +132,18 @@ static void	draw_crosshair(t_game *game)
 
 static void	draw_icon_in_slot(t_game *game, t_img *icon, int slot_x, int slot_y)
 {
-	int	x;
-	int	y;
-	int	color;
-	int	scale;
+	int		x;
+	int		y;
+	int		color;
+	int		icon_size;
+	int		slot_size;
 
 	if (!icon->img)
 		return ;
-	scale = 2;
+	slot_size = 16 * HUD_SCALE;
+	icon_size = icon->width * HUD_SCALE;
+	slot_x += (slot_size - icon_size) / 2;
+	slot_y += (slot_size - icon_size) / 2;
 	y = 0;
 	while (y < icon->height)
 	{
@@ -148,16 +152,8 @@ static void	draw_icon_in_slot(t_game *game, t_img *icon, int slot_x, int slot_y)
 		{
 			color = icon->addr[y * icon->width + x];
 			if ((color & 0x00FFFFFF) != 0)
-			{
-				put_pixel(&game->img, slot_x + x * scale, slot_y + y * scale,
-					color);
-				put_pixel(&game->img, slot_x + x * scale + 1, slot_y + y * scale,
-					color);
-				put_pixel(&game->img, slot_x + x * scale, slot_y + y * scale + 1,
-					color);
-				put_pixel(&game->img, slot_x + x * scale + 1,
-					slot_y + y * scale + 1, color);
-			}
+				draw_scaled_pixel(game, slot_x + x * HUD_SCALE,
+					slot_y + y * HUD_SCALE, color);
 			x++;
 		}
 		y++;

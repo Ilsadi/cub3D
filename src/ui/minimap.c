@@ -6,11 +6,15 @@
 /*   By: amacaull <amacaull@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/29 09:23:50 by amacaull          #+#    #+#             */
-/*   Updated: 2026/02/03 21:43:45 by amacaull         ###   ########.fr       */
+/*   Updated: 2026/02/06 15:00:47 by amacaull         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "cub3d.h"
+
+#define MINI_DOOR 0x8B4513
+#define MINI_KEY 0xFFD700
+#define MINI_ENDER 0xFF00FF
 
 static void	draw_square(t_game *game, int x, int y, int color)
 {
@@ -154,6 +158,45 @@ static void	draw_collectibles(t_game *game)
 	}
 }
 
+static void	draw_endermen_mini(t_game *game)
+{
+	int		i;
+	int		px;
+	int		py;
+	double	dist;
+	int		color;
+
+	i = 0;
+	while (i < game->endermen.count)
+	{
+		if (game->endermen.list[i].is_active)
+		{
+			dist = sqrt(pow(game->player.x - game->endermen.list[i].x, 2)
+					+ pow(game->player.y - game->endermen.list[i].y, 2));
+			if (dist < 3.9 && is_visible(game, game->endermen.list[i].x,
+					game->endermen.list[i].y))
+			{
+				px = MINI_OFFSET + (int)(game->endermen.list[i].x * MINI_SCALE);
+				py = MINI_OFFSET + (int)(game->endermen.list[i].y * MINI_SCALE);
+				if (game->endermen.list[i].is_angry)
+					color = 0xFF0000;
+				else
+					color = MINI_ENDER;
+				put_pixel(&game->img, px, py, color);
+				put_pixel(&game->img, px - 1, py, color);
+				put_pixel(&game->img, px + 1, py, color);
+				put_pixel(&game->img, px, py - 1, color);
+				put_pixel(&game->img, px, py + 1, color);
+				put_pixel(&game->img, px - 1, py - 1, color);
+				put_pixel(&game->img, px + 1, py - 1, color);
+				put_pixel(&game->img, px - 1, py + 1, color);
+				put_pixel(&game->img, px + 1, py + 1, color);
+			}
+		}
+		i++;
+	}
+}
+
 static void	draw_border(t_game *game, int w, int h)
 {
 	int	x;
@@ -190,6 +233,7 @@ void	render_minimap(t_game *game)
 			handle_tile(game, x, y);
 	}
 	draw_collectibles(game);
+	draw_endermen_mini(game);
 	draw_player_icon(game);
 	w = game->map.width * MINI_SCALE;
 	h = game->map.height * MINI_SCALE;

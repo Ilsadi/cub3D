@@ -6,7 +6,7 @@
 /*   By: amacaull <amacaull@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/07 13:15:35 by ilsadi            #+#    #+#             */
-/*   Updated: 2026/02/03 21:44:10 by amacaull         ###   ########.fr       */
+/*   Updated: 2026/02/06 14:37:01 by amacaull         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,6 +18,7 @@
 # include <stdio.h>
 # include <fcntl.h>
 # include <math.h>
+# include <time.h>
 # include <mlx.h>
 # include "../libft/include/libft_ultimate.h"
 
@@ -33,10 +34,10 @@
 # define HUNGER_THRESHOLD 200
 
 // MOUSE
-# define MOUSE_SENSITIVITY 0.003
+# define MOUSE_SENSITIVITY 0.002
 
 // RENDER & SHADING
-# define MAX_VIEW_DIST 3.0
+# define MAX_VIEW_DIST 4.0
 
 // ANIMATION
 # define ANIM_SPEED 10
@@ -51,8 +52,6 @@
 # define MINI_FLOOR 0xFFFFFF
 # define MINI_BG 0x000000
 # define MINI_BORDER 0xFFFFFF
-# define MINI_DOOR 0x8B4513
-# define MINI_KEY 0xFFD700
 
 // DOORS
 # define DOOR_FRAMES 4
@@ -64,6 +63,18 @@
 # define ITEM_NONE 0
 # define ITEM_KEY 1
 # define HOTBAR_SLOTS 9
+
+// ENDERMAN
+# define MAX_ENDERMEN 32
+# define ENDER_TP_NORMAL 300
+# define ENDER_TP_ANGRY 120
+# define ENDER_ANGRY_DURATION 600
+# define ENDER_RANGE_NORMAL 7
+# define ENDER_RANGE_ANGRY 5
+# define ENDER_DAMAGE_RANGE 1.0
+# define ENDER_DAMAGE 2
+# define ENDER_INVINCIBILITY 60
+# define GAMEOVER_DELAY 300
 
 // KEYS
 # ifdef __linux__
@@ -196,6 +207,20 @@ typedef struct s_floor
 	float	floor_y;
 }	t_floor;
 
+typedef struct s_sprite_render
+{
+	double	transform_x;
+	double	transform_y;
+	int		screen_x;
+	int		height;
+	int		width;
+	int		draw_start_x;
+	int		draw_end_x;
+	int		draw_start_y;
+	int		draw_end_y;
+	int		orig_start_y;
+}	t_sprite_render;
+
 typedef struct s_tex
 {
 	char	*no_path;
@@ -234,6 +259,7 @@ typedef struct s_hud
 	int		slot;
 	int		food_timer;
 	int		inventory[HOTBAR_SLOTS];
+	int		invincibility;
 }	t_hud;
 
 typedef struct s_door
@@ -266,6 +292,29 @@ typedef struct s_collectibles
 	t_img			key_tex;
 }	t_collectibles;
 
+typedef struct s_enderman
+{
+	double	x;
+	double	y;
+	int		is_angry;
+	int		angry_timer;
+	int		tp_timer;
+	int		is_active;
+}	t_enderman;
+
+typedef struct s_endermen
+{
+	t_enderman	list[MAX_ENDERMEN];
+	int			count;
+	t_img		texture;
+}	t_endermen;
+
+typedef struct s_gameover
+{
+	int		active;
+	int		timer;
+}	t_gameover;
+
 typedef struct s_game
 {
 	void			*mlx;
@@ -280,6 +329,8 @@ typedef struct s_game
 	t_keys			keys;
 	t_doors			doors;
 	t_collectibles	collectibles;
+	t_endermen		endermen;
+	t_gameover		gameover;
 }	t_game;
 
 // CORE
@@ -316,6 +367,9 @@ void	update_animation(t_game *game);
 void	free_animations(t_game *game);
 void	render_floor_ceiling(t_game *game);
 int		apply_shading(int color, double distance);
+
+// SPRITES (Billboarding)
+void	render_sprites(t_game *game, double *z_buffer);
 
 // UI
 void	init_hud(t_game *game);
@@ -355,5 +409,15 @@ void	use_selected_item(t_game *game);
 
 // INTERACTION
 void	handle_interaction(t_game *game);
+
+// ENDERMEN
+void	init_endermen(t_game *game);
+void	update_endermen(t_game *game);
+void	render_endermen(t_game *game, double *z_buffer);
+void	free_endermen(t_game *game);
+
+// GAME STATE
+void	check_gameover(t_game *game);
+void	render_gameover(t_game *game);
 
 #endif

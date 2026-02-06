@@ -6,7 +6,7 @@
 /*   By: amacaull <amacaull@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/27 03:59:44 by amacaull          #+#    #+#             */
-/*   Updated: 2026/02/03 21:26:33 by amacaull         ###   ########.fr       */
+/*   Updated: 2026/02/06 13:56:44 by amacaull         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -78,10 +78,12 @@ static int	flood_fill(char **map, int x, int y, t_game *game)
 		return (0);
 	if (is_blocking_tile(c))
 		return (1);
-	if (c == 'V' || c == 'v')
+	if (c == 'V' || c == 'v' || c == 'm')
 		return (1);
 	if (c == 'K')
 		map[y][x] = 'v';
+	else if (c == 'M')
+		map[y][x] = 'm';
 	else
 		map[y][x] = 'V';
 	if (!flood_fill(map, x + 1, y, game))
@@ -110,6 +112,8 @@ static void	restore_visited(t_game *game)
 				game->map.grid[y][x] = '0';
 			else if (game->map.grid[y][x] == 'v')
 				game->map.grid[y][x] = 'K';
+			else if (game->map.grid[y][x] == 'm')
+				game->map.grid[y][x] = 'M';
 		}
 	}
 }

@@ -6,7 +6,7 @@
 #    By: amacaull <amacaull@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2026/01/22 22:35:31 by ilsadi            #+#    #+#              #
-#    Updated: 2026/02/03 21:17:19 by amacaull         ###   ########.fr        #
+#    Updated: 2026/02/06 14:01:40 by amacaull         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -56,20 +56,25 @@ SRCS        = src/core/main.c \
 			  src/player/utils.c \
 			  src/player/stats.c \
 			  \
-			  src/raycast/raycasting.c \
-			  src/raycast/raycast_utils.c \
-			  \
-			  src/render/textures.c \
-			  src/render/animation.c \
-			  src/render/background.c \
-			  src/render/shading.c \
+			  src/rendering/raycasting.c \
+			  src/rendering/raycast_utils.c \
+			  src/rendering/textures.c \
+			  src/rendering/animation.c \
+			  src/rendering/background.c \
+			  src/rendering/shading.c \
+			  src/rendering/sprite.c \
 			  \
 			  src/ui/hud.c \
 			  src/ui/minimap.c \
 			  \
 			  src/interact/door.c \
 			  src/interact/collectible.c \
-			  src/interact/interaction.c
+			  src/interact/interaction.c \
+			  \
+			  src/enemies/enderman.c \
+			  src/enemies/enderman_render.c \
+			  \
+			  src/game/gameover.c
 
 OBJS        = $(SRCS:%.c=$(OBJ_DIR)/%.o)
 
