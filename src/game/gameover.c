@@ -6,7 +6,7 @@
 /*   By: amacaull <amacaull@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/06 14:01:01 by amacaull          #+#    #+#             */
-/*   Updated: 2026/02/06 14:59:51 by amacaull         ###   ########.fr       */
+/*   Updated: 2026/02/06 15:52:08 by amacaull         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,7 @@ static void	draw_letter_pixel(t_game *game, int x, int y, int color)
 	int	j;
 	int	scale;
 
-	scale = 4;
+	scale = 6;
 	i = 0;
 	while (i < scale)
 	{
@@ -166,7 +166,7 @@ static void	draw_game_over_text(t_game *game)
 	int	color;
 
 	color = 0xFF0000;
-	start_x = WIDTH / 2 - 120;
+	start_x = WIDTH / 2 - 70;
 	start_y = HEIGHT / 2 - 50;
 	draw_char_g(game, start_x, start_y, color);
 	draw_char_a(game, start_x + 25, start_y, color);

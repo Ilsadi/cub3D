@@ -6,7 +6,7 @@
 /*   By: amacaull <amacaull@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/07 13:15:35 by ilsadi            #+#    #+#             */
-/*   Updated: 2026/02/06 14:37:01 by amacaull         ###   ########.fr       */
+/*   Updated: 2026/02/06 15:48:56 by amacaull         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,6 +32,9 @@
 # define ROT_SPEED 0.03
 # define HUNGER_DRAIN 5
 # define HUNGER_THRESHOLD 200
+# define FOOD_MAX 20
+# define REGEN_DELAY 300
+# define REGEN_RATE 180
 
 // MOUSE
 # define MOUSE_SENSITIVITY 0.002
@@ -44,7 +47,7 @@
 # define ANIM_FRAMES 120
 
 // UI
-# define HUD_SCALE 3
+# define HUD_SCALE 2.5
 # define MINI_SCALE 8
 # define MINI_OFFSET 8
 # define MINI_PLAYER 0xFF0000
@@ -254,12 +257,16 @@ typedef struct s_hud
 	t_img	food_empty;
 	t_img	torch;
 	t_img	key_icon;
+	t_img	hand_empty;
+	t_img	hand_pickaxe;
 	int		health;
 	int		food;
 	int		slot;
 	int		food_timer;
 	int		inventory[HOTBAR_SLOTS];
 	int		invincibility;
+	int		no_sprint_timer;
+	int		regen_timer;
 }	t_hud;
 
 typedef struct s_door
