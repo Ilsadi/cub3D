@@ -6,7 +6,7 @@
 /*   By: amacaull <amacaull@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/06 08:59:58 by amacaull          #+#    #+#             */
-/*   Updated: 2026/02/07 11:04:30 by amacaull         ###   ########.fr       */
+/*   Updated: 2026/02/07 16:11:55 by amacaull         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,7 +29,7 @@ static void	calc_ender_transform(t_game *game, t_sprite_render *sr,
 	sr->transform_y = inv_det * (-game->ray.plane_y * sprite_x
 			+ game->ray.plane_x * sprite_y);
 	sr->screen_x = (int)((WIDTH / 2) * (1 + sr->transform_x / sr->transform_y));
-	sprite_scale = 1.5;
+	sprite_scale = 1;
 	sr->height = abs((int)(HEIGHT / sr->transform_y * sprite_scale));
 	sr->width = abs((int)(HEIGHT / sr->transform_y * sprite_scale * 0.5));
 }
@@ -39,7 +39,7 @@ static void	calc_ender_bounds(t_game *game, t_sprite_render *sr)
 	int		v_move_screen;
 	double	v_move;
 
-	v_move = 0.25;
+	v_move = 0.02;
 	v_move_screen = (int)(v_move * HEIGHT / sr->transform_y);
 	sr->orig_start_y = -sr->height / 2 + HEIGHT / 2 + game->player.pitch
 		+ v_move_screen;
