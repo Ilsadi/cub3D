@@ -6,7 +6,7 @@
 /*   By: amacaull <amacaull@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/07 13:15:35 by ilsadi            #+#    #+#             */
-/*   Updated: 2026/02/06 23:11:12 by amacaull         ###   ########.fr       */
+/*   Updated: 2026/02/07 11:21:53 by amacaull         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,7 +40,7 @@
 # define MOUSE_SENSITIVITY 0.002
 
 // RENDER & SHADING
-# define MAX_VIEW_DIST 8.0
+# define MAX_VIEW_DIST 3.0
 
 // ANIMATION
 # define ANIM_SPEED 10
@@ -57,7 +57,7 @@
 # define MINI_BORDER 0xFFFFFF
 
 // DOORS
-# define DOOR_FRAMES 4
+# define DOOR_FRAMES 5
 # define DOOR_RANGE 1.5
 # define MAX_DOORS 64
 
@@ -65,6 +65,7 @@
 # define MAX_COLLECTIBLES 64
 # define ITEM_NONE 0
 # define ITEM_KEY 1
+# define KEY_USES 5
 # define HOTBAR_SLOTS 9
 
 // ENDERMAN
@@ -77,7 +78,7 @@
 # define ENDER_DAMAGE_RANGE 1.0
 # define ENDER_DAMAGE 2
 # define ENDER_INVINCIBILITY 60
-# define GAMEOVER_DELAY 300
+# define GAMEOVER_DELAY 450
 
 // KEYS
 # ifdef __linux__
@@ -264,6 +265,7 @@ typedef struct s_hud
 	int		slot;
 	int		food_timer;
 	int		inventory[HOTBAR_SLOTS];
+	int		key_uses[HOTBAR_SLOTS];
 	int		invincibility;
 	int		no_sprint_timer;
 	int		regen_timer;

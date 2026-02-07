@@ -6,7 +6,7 @@
 /*   By: amacaull <amacaull@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/03 19:10:45 by amacaull          #+#    #+#             */
-/*   Updated: 2026/02/03 21:42:51 by amacaull         ###   ########.fr       */
+/*   Updated: 2026/02/07 10:57:28 by amacaull         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -73,6 +73,7 @@ void	init_collectibles(t_game *game)
 	while (i < HOTBAR_SLOTS)
 	{
 		game->hud.inventory[i] = ITEM_NONE;
+		game->hud.key_uses[i] = 0;
 		i++;
 	}
 	load_collectible_textures(game);
@@ -97,6 +98,8 @@ int	add_item_to_inventory(t_game *game, int item_type)
 		if (game->hud.inventory[i] == ITEM_NONE)
 		{
 			game->hud.inventory[i] = item_type;
+			if (item_type == ITEM_KEY)
+				game->hud.key_uses[i] = KEY_USES;
 			return (1);
 		}
 		i++;
@@ -108,14 +111,29 @@ int	has_item_selected(t_game *game, int item_type)
 {
 	if (game->hud.slot < 0 || game->hud.slot >= HOTBAR_SLOTS)
 		return (0);
-	return (game->hud.inventory[game->hud.slot] == item_type);
+	if (game->hud.inventory[game->hud.slot] != item_type)
+		return (0);
+	if (item_type == ITEM_KEY && game->hud.key_uses[game->hud.slot] <= 0)
+		return (0);
+	return (1);
 }
 
 void	use_selected_item(t_game *game)
 {
-	if (game->hud.slot < 0 || game->hud.slot >= HOTBAR_SLOTS)
+	int	slot;
+
+	slot = game->hud.slot;
+	if (slot < 0 || slot >= HOTBAR_SLOTS)
 		return ;
-	game->hud.inventory[game->hud.slot] = ITEM_NONE;
+	if (game->hud.inventory[slot] == ITEM_KEY)
+	{
+		game->hud.key_uses[slot]--;
+		if (game->hud.key_uses[slot] <= 0)
+		{
+			game->hud.inventory[slot] = ITEM_NONE;
+			game->hud.key_uses[slot] = 0;
+		}
+	}
 }
 
 void	update_collectibles(t_game *game)

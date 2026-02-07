@@ -6,7 +6,7 @@
 /*   By: amacaull <amacaull@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/03 19:03:03 by amacaull          #+#    #+#             */
-/*   Updated: 2026/02/03 21:50:02 by amacaull         ###   ########.fr       */
+/*   Updated: 2026/02/07 10:57:55 by amacaull         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,8 +30,6 @@ static void	load_door_frame(t_game *game, int i)
 				game->doors.frames[i].img, &game->doors.frames[i].pixel_bits,
 				&game->doors.frames[i].size_line,
 				&game->doors.frames[i].endian);
-	else
-		printf("Error\nFailed to load door frame: %s\n", path);
 	free(path);
 }
 

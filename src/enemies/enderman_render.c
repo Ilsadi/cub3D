@@ -6,7 +6,7 @@
 /*   By: amacaull <amacaull@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/06 08:59:58 by amacaull          #+#    #+#             */
-/*   Updated: 2026/02/06 23:10:29 by amacaull         ###   ########.fr       */
+/*   Updated: 2026/02/07 11:04:30 by amacaull         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,16 +34,20 @@ static void	calc_ender_transform(t_game *game, t_sprite_render *sr,
 	sr->width = abs((int)(HEIGHT / sr->transform_y * sprite_scale * 0.5));
 }
 
-static void	calc_ender_bounds(t_sprite_render *sr, int pitch)
+static void	calc_ender_bounds(t_game *game, t_sprite_render *sr)
 {
-	int	v_offset;
+	int		v_move_screen;
+	double	v_move;
 
-	v_offset = sr->height / 4;
-	sr->orig_start_y = -sr->height / 2 + HEIGHT / 2 + pitch + v_offset;
+	v_move = 0.25;
+	v_move_screen = (int)(v_move * HEIGHT / sr->transform_y);
+	sr->orig_start_y = -sr->height / 2 + HEIGHT / 2 + game->player.pitch
+		+ v_move_screen;
 	sr->draw_start_y = sr->orig_start_y;
 	if (sr->draw_start_y < 0)
 		sr->draw_start_y = 0;
-	sr->draw_end_y = sr->height / 2 + HEIGHT / 2 + pitch + v_offset;
+	sr->draw_end_y = sr->height / 2 + HEIGHT / 2 + game->player.pitch
+		+ v_move_screen;
 	if (sr->draw_end_y >= HEIGHT)
 		sr->draw_end_y = HEIGHT - 1;
 	sr->draw_start_x = -sr->width / 2 + sr->screen_x;
@@ -103,7 +107,7 @@ static void	render_single_enderman(t_game *game, t_enderman *ender,
 	calc_ender_transform(game, &sr, ender);
 	if (sr.transform_y <= 0.1)
 		return ;
-	calc_ender_bounds(&sr, game->player.pitch);
+	calc_ender_bounds(game, &sr);
 	x = sr.draw_start_x;
 	while (x < sr.draw_end_x)
 	{
