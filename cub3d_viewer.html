@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>cub3D Map Viewer</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { background: #1a1a2e; color: #eee; font-family: 'Segoe UI', monospace; padding: 20px; }
+  h1 { color: #e94560; margin-bottom: 10px; }
+  .legend { display: flex; gap: 12px; margin: 12px 0; flex-wrap: wrap; font-size: 13px; }
+  .legend-item { display: flex; align-items: center; gap: 5px; }
+  .legend-box { width: 14px; height: 14px; border: 1px solid #555; border-radius: 2px; }
+  #drop-zone {
+    border: 2px dashed #e94560; border-radius: 10px; padding: 40px;
+    text-align: center; margin: 20px 0; cursor: pointer; transition: background 0.2s;
+  }
+  #drop-zone:hover, #drop-zone.drag-over { background: rgba(233,69,96,0.15); }
+  #drop-zone p { font-size: 16px; color: #aaa; }
+  #drop-zone input { display: none; }
+  #stats { color: #aaa; margin: 10px 0; font-size: 14px; }
+  #canvas-wrap { position: relative; display: inline-block; margin-top: 10px; }
+  canvas { border: 2px solid #e94560; image-rendering: pixelated; cursor: crosshair; }
+  #info { color: #aaa; margin-top: 8px; font-size: 14px; height: 20px; }
+  #errors { color: #ff6b6b; margin-top: 10px; font-size: 13px; white-space: pre-wrap; }
+  .controls { margin: 10px 0; display: flex; gap: 10px; align-items: center; }
+  .controls label { color: #aaa; font-size: 13px; }
+  .controls input[type=range] { width: 120px; }
+</style>
+</head>
+<body>
+
+<h1>cub3D Map Viewer</h1>
+<div class="legend">
+  <div class="legend-item"><div class="legend-box" style="background:#444"></div> Mur (1)</div>
+  <div class="legend-item"><div class="legend-box" style="background:#c8b896"></div> Sol (0)</div>
+  <div class="legend-item"><div class="legend-box" style="background:#6a4c93"></div> Anim (2)</div>
+  <div class="legend-item"><div class="legend-box" style="background:#8B4513"></div> Porte (D)</div>
+  <div class="legend-item"><div class="legend-box" style="background:#FFD700"></div> Cle (K)</div>
+  <div class="legend-item"><div class="legend-box" style="background:#FF0000"></div> Enderman (M)</div>
+  <div class="legend-item"><div class="legend-box" style="background:#00FF00"></div> Spawn (N/S/E/W)</div>
+</div>
+
+<div id="drop-zone" onclick="document.getElementById('file-input').click()">
+  <p>Glisse ton fichier <b>.cub</b> ici ou clique pour choisir</p>
+  <input type="file" id="file-input" accept=".cub">
+</div>
+
+<div id="stats"></div>
+<div id="errors"></div>
+
+<div class="controls" id="controls" style="display:none">
+  <label>Zoom: </label>
+  <input type="range" id="zoom" min="2" max="20" value="9">
+  <span id="zoom-val">9</span>px
+  <label style="margin-left:15px">Grille: </label>
+  <input type="checkbox" id="grid-toggle" checked>
+</div>
+
+<div id="canvas-wrap">
+  <canvas id="map"></canvas>
+</div>
+<div id="info"></div>
+
+<script>
+var mapData = [];
+var mapW = 0, mapH = 0;
+var scale = 9;
+var showGrid = true;
+
+var colors = {
+  "1": "#444444", "0": "#c8b896", "2": "#6a4c93",
+  "D": "#8B4513", "K": "#FFD700", "M": "#FF0000",
+  "N": "#00FF00", "S": "#00FF00", "E": "#00FF00", "W": "#00FF00",
+  " ": "#111111"
+};
+var names = {
+  "1":"Mur", "0":"Sol", "D":"Porte", "K":"Cle", "M":"Enderman",
+  "N":"Spawn N", "S":"Spawn S", "E":"Spawn E", "W":"Spawn W",
+  "2":"Mur anime", " ":"Vide"
+};
+
+function parseCub(text) {
+  var lines = text.split("\n");
+  var mapLines = [];
+  var inMap = false;
+  var config = { no: "", so: "", we: "", ea: "", f: "", c: "" };
+  var errors = [];
+
+  for (var i = 0; i < lines.length; i++) {
+    var line = lines[i].replace(/\r$/, "");
+    var trimmed = line.trim();
+
+    if (!inMap) {
+      if (trimmed.indexOf("NO ") === 0) { config.no = trimmed; continue; }
+      if (trimmed.indexOf("SO ") === 0) { config.so = trimmed; continue; }
+      if (trimmed.indexOf("WE ") === 0) { config.we = trimmed; continue; }
+      if (trimmed.indexOf("EA ") === 0) { config.ea = trimmed; continue; }
+      if (trimmed.indexOf("F ") === 0) { config.f = trimmed; continue; }
+      if (trimmed.indexOf("C ") === 0) { config.c = trimmed; continue; }
+      if (trimmed === "") continue;
+      if (/^[01 \tDKMNSEW2]+$/.test(line)) { inMap = true; }
+      else continue;
+    }
+
+    if (inMap) {
+      if (line === "" || trimmed === "") break;
+      mapLines.push(line.replace(/\t/g, " "));
+    }
+  }
+
+  var maxW = 0;
+  for (var j = 0; j < mapLines.length; j++) {
+    if (mapLines[j].length > maxW) maxW = mapLines[j].length;
+  }
+  for (var j = 0; j < mapLines.length; j++) {
+    while (mapLines[j].length < maxW) mapLines[j] += "1";
+  }
+
+  // Count elements
+  var counts = { doors: 0, keys: 0, endermen: 0, spawns: 0, floors: 0 };
+  for (var y = 0; y < mapLines.length; y++) {
+    for (var x = 0; x < mapLines[y].length; x++) {
+      var c = mapLines[y][x];
+      if (c === "D") counts.doors++;
+      if (c === "K") counts.keys++;
+      if (c === "M") counts.endermen++;
+      if (c === "N" || c === "S" || c === "E" || c === "W") counts.spawns++;
+      if (c === "0") counts.floors++;
+    }
+  }
+
+  // Validate
+  if (counts.spawns !== 1) errors.push("Spawns: " + counts.spawns + " (doit etre 1)");
+  if (counts.doors > 64) errors.push("Portes: " + counts.doors + " (max 64)");
+  if (counts.keys > 64) errors.push("Cles: " + counts.keys + " (max 64)");
+  if (counts.endermen > 32) errors.push("Endermen: " + counts.endermen + " (max 32)");
+
+  // Check border closure
+  for (var y = 0; y < mapLines.length; y++) {
+    for (var x = 0; x < mapLines[y].length; x++) {
+      var c = mapLines[y][x];
+      if ("0DKMNSEW".indexOf(c) >= 0) {
+        if (y === 0 || y === mapLines.length - 1 || x === 0 || x === mapLines[y].length - 1) {
+          errors.push("Bordure ouverte: '" + c + "' en (" + x + "," + y + ")");
+        }
+      }
+    }
+  }
+
+  // Check line lengths consistency
+  for (var j = 0; j < mapLines.length; j++) {
+    if (mapLines[j].length !== maxW) {
+      errors.push("Ligne " + (j+1) + ": " + mapLines[j].length + " chars (attendu " + maxW + ")");
+    }
+  }
+
+  return { map: mapLines, w: maxW, h: mapLines.length, counts: counts, errors: errors, config: config };
+}
+
+function draw() {
+  var canvas = document.getElementById("map");
+  var ctx = canvas.getContext("2d");
+  canvas.width = mapW * scale;
+  canvas.height = mapH * scale;
+
+  for (var y = 0; y < mapH; y++) {
+    for (var x = 0; x < mapW; x++) {
+      var c = (x < mapData[y].length) ? mapData[y][x] : "1";
+      ctx.fillStyle = colors[c] || "#111";
+      ctx.fillRect(x * scale, y * scale, scale, scale);
+    }
+  }
+
+  if (showGrid && scale >= 5) {
+    ctx.strokeStyle = "rgba(255,255,255,0.06)";
+    ctx.lineWidth = 0.5;
+    for (var i = 0; i <= Math.max(mapW, mapH); i++) {
+      ctx.beginPath(); ctx.moveTo(i*scale, 0); ctx.lineTo(i*scale, mapH*scale); ctx.stroke();
+      ctx.beginPath(); ctx.moveTo(0, i*scale); ctx.lineTo(mapW*scale, i*scale); ctx.stroke();
+    }
+  }
+}
+
+function loadFile(file) {
+  var reader = new FileReader();
+  reader.onload = function(e) {
+    var result = parseCub(e.target.result);
+    mapData = result.map;
+    mapW = result.w;
+    mapH = result.h;
+
+    var c = result.counts;
+    document.getElementById("stats").innerHTML =
+      "<b>" + mapW + "x" + mapH + "</b> | " +
+      "<b>" + c.doors + "</b> Portes | " +
+      "<b>" + c.keys + "</b> Cles | " +
+      "<b>" + c.endermen + "</b> Endermen | " +
+      "<b>" + c.floors + "</b> Sol | " +
+      "Config: " + result.config.f + " / " + result.config.c;
+
+    if (result.errors.length > 0) {
+      document.getElementById("errors").textContent = "⚠ " + result.errors.join("\n⚠ ");
+    } else {
+      document.getElementById("errors").textContent = "✅ Map valide !";
+      document.getElementById("errors").style.color = "#4ade80";
+    }
+
+    document.getElementById("controls").style.display = "flex";
+    document.getElementById("drop-zone").style.display = "none";
+
+    // Auto-scale to fit
+    var maxPx = Math.min(window.innerWidth - 60, 900);
+    scale = Math.max(2, Math.min(20, Math.floor(maxPx / Math.max(mapW, mapH))));
+    document.getElementById("zoom").value = scale;
+    document.getElementById("zoom-val").textContent = scale;
+
+    draw();
+  };
+  reader.readAsText(file);
+}
+
+// File input
+document.getElementById("file-input").addEventListener("change", function(e) {
+  if (e.target.files.length > 0) loadFile(e.target.files[0]);
+});
+
+// Drag & drop
+var dz = document.getElementById("drop-zone");
+dz.addEventListener("dragover", function(e) { e.preventDefault(); dz.classList.add("drag-over"); });
+dz.addEventListener("dragleave", function() { dz.classList.remove("drag-over"); });
+dz.addEventListener("drop", function(e) {
+  e.preventDefault(); dz.classList.remove("drag-over");
+  if (e.dataTransfer.files.length > 0) loadFile(e.dataTransfer.files[0]);
+});
+
+// Zoom
+document.getElementById("zoom").addEventListener("input", function(e) {
+  scale = parseInt(e.target.value);
+  document.getElementById("zoom-val").textContent = scale;
+  if (mapData.length > 0) draw();
+});
+
+// Grid toggle
+document.getElementById("grid-toggle").addEventListener("change", function(e) {
+  showGrid = e.target.checked;
+  if (mapData.length > 0) draw();
+});
+
+// Hover info
+document.getElementById("map").addEventListener("mousemove", function(e) {
+  var rect = e.target.getBoundingClientRect();
+  var x = Math.floor((e.clientX - rect.left) / scale);
+  var y = Math.floor((e.clientY - rect.top) / scale);
+  if (x >= 0 && x < mapW && y >= 0 && y < mapH) {
+    var c = mapData[y][x];
+    document.getElementById("info").textContent =
+      "(" + x + ", " + y + ") = " + (names[c] || c);
+  }
+});
+</script>
+</body>
+</html>

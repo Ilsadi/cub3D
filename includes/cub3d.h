@@ -6,7 +6,7 @@
 /*   By: amacaull <amacaull@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/07 13:15:35 by ilsadi            #+#    #+#             */
-/*   Updated: 2026/02/07 16:08:58 by amacaull         ###   ########.fr       */
+/*   Updated: 2026/02/08 11:18:35 by amacaull         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,21 +40,28 @@
 # define MOUSE_SENSITIVITY 0.002
 
 // RENDER & SHADING
-# define MAX_VIEW_DIST 9.0
+# define MAX_VIEW_DIST 15.0
 
 // ANIMATION
 # define ANIM_SPEED 10
 # define ANIM_FRAMES 120
 
 // UI
-# define HUD_SCALE 3
-# define MINI_SCALE 8
+# define HUD_SCALE 2.5
 # define MINI_OFFSET 8
 # define MINI_PLAYER 0xFF0000
 # define MINI_WALL 0x000000
 # define MINI_FLOOR 0xFFFFFF
 # define MINI_BG 0x000000
 # define MINI_BORDER 0xFFFFFF
+# define MINI_SIZE    200
+# define MINI_RAD     100
+# define MINI_VIEW    6.5
+# define MINI_PPT     15.384615
+# define MINI_DOOR_C  0x8B4513
+# define MINI_KEY_C   0xFFD700
+# define MINI_ENDER_C 0xFF00FF
+# define VIS_RANGE    10
 
 // DOORS
 # define DOOR_FRAMES 5
