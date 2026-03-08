@@ -6,7 +6,7 @@
 /*   By: amacaull <amacaull@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/28 10:15:46 by amacaull          #+#    #+#             */
-/*   Updated: 2026/02/06 14:59:27 by amacaull         ###   ########.fr       */
+/*   Updated: 2026/03/08 13:59:25 by amacaull         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,10 +14,11 @@
 
 int	game_loop(t_game *game)
 {
-	if (game->gameover.active)
+	if (game->gameover.active || game->gameover.victory)
 	{
 		check_gameover(game);
 		render_gameover(game);
+		render_victory(game);
 		mlx_put_image_to_window(game->mlx, game->win, game->img.img, 0, 0);
 		return (0);
 	}
@@ -34,6 +35,8 @@ int	game_loop(t_game *game)
 	render_hud(game);
 	if (game->gameover.active)
 		render_gameover(game);
+	if (game->gameover.victory)
+		render_victory(game);
 	mlx_put_image_to_window(game->mlx, game->win, game->img.img, 0, 0);
 	return (0);
 }

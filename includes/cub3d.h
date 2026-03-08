@@ -6,7 +6,7 @@
 /*   By: amacaull <amacaull@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/07 13:15:35 by ilsadi            #+#    #+#             */
-/*   Updated: 2026/02/12 19:09:11 by amacaull         ###   ########.fr       */
+/*   Updated: 2026/03/08 14:33:30 by amacaull         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,7 +37,7 @@
 # define REGEN_RATE 180
 
 // MOUSE
-# define MOUSE_SENSITIVITY 0.002
+# define MOUSE_SENSITIVITY 0.001
 
 // RENDER & SHADING
 # define MAX_VIEW_DIST 3.5
@@ -62,6 +62,10 @@
 # define MINI_KEY_C   0xFFD700
 # define MINI_ENDER_C 0xFF00FF
 # define VIS_RANGE    4
+# define SCALE_DEFAULT  0.2
+# define SCALE_EGG      0.5
+# define VGROUND_DEFAULT 0.4
+# define VGROUND_EGG     0.35
 
 // DOORS
 # define DOOR_FRAMES 5
@@ -72,8 +76,11 @@
 # define MAX_COLLECTIBLES 64
 # define ITEM_NONE 0
 # define ITEM_KEY 1
+# define ITEM_APPLE 2
+# define ITEM_EGG 3
 # define KEY_USES 5
 # define HOTBAR_SLOTS 9
+# define APPLE_HP 6
 
 // ENDERMAN
 # define MAX_ENDERMEN 32
@@ -86,6 +93,7 @@
 # define ENDER_DAMAGE 2
 # define ENDER_INVINCIBILITY 60
 # define GAMEOVER_DELAY 450
+# define VICTORY_DELAY 180
 
 // KEYS
 # ifdef __linux__
@@ -265,8 +273,12 @@ typedef struct s_hud
 	t_img	food_empty;
 	t_img	torch;
 	t_img	key_icon;
+	t_img	apple_icon;
+	t_img	egg_icon;
 	t_img	hand_empty;
 	t_img	hand_pickaxe;
+	t_img	hand_apple;
+	t_img	hand_egg;
 	int		health;
 	int		food;
 	int		slot;
@@ -306,6 +318,8 @@ typedef struct s_collectibles
 	t_collectible	list[MAX_COLLECTIBLES];
 	int				count;
 	t_img			key_tex;
+	t_img			apple_tex;
+	t_img			egg_tex;
 }	t_collectibles;
 
 typedef struct s_enderman
@@ -329,6 +343,7 @@ typedef struct s_endermen
 typedef struct s_gameover
 {
 	int		active;
+	int		victory;
 	int		timer;
 }	t_gameover;
 
@@ -436,5 +451,7 @@ void	free_endermen(t_game *game);
 // GAME STATE
 void	check_gameover(t_game *game);
 void	render_gameover(t_game *game);
+void	trigger_victory(t_game *game);
+void	render_victory(t_game *game);
 
 #endif

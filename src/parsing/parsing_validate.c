@@ -6,7 +6,7 @@
 /*   By: amacaull <amacaull@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/27 03:59:30 by amacaull          #+#    #+#             */
-/*   Updated: 2026/02/06 15:00:09 by amacaull         ###   ########.fr       */
+/*   Updated: 2026/03/08 13:59:44 by amacaull         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,6 +21,8 @@ static int	is_valid_map_char(char c)
 	if (c == ' ' || c == '\t')
 		return (1);
 	if (c == 'D' || c == 'K' || c == 'M')
+		return (1);
+	if (c == 'A' || c == 'V')
 		return (1);
 	return (0);
 }

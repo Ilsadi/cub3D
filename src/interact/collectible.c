@@ -6,11 +6,26 @@
 /*   By: amacaull <amacaull@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/03 19:10:45 by amacaull          #+#    #+#             */
-/*   Updated: 2026/02/07 10:57:28 by amacaull         ###   ########.fr       */
+/*   Updated: 2026/03/08 13:57:54 by amacaull         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "cub3d.h"
+
+static void	add_collectible(t_game *game, int x, int y, int type)
+{
+	int	idx;
+
+	if (game->collectibles.count >= MAX_COLLECTIBLES)
+		return ;
+	idx = game->collectibles.count;
+	game->collectibles.list[idx].x = x;
+	game->collectibles.list[idx].y = y;
+	game->collectibles.list[idx].type = type;
+	game->collectibles.list[idx].collected = 0;
+	game->collectibles.count++;
+	game->map.grid[y][x] = '0';
+}
 
 static void	find_collectibles_in_map(t_game *game)
 {
@@ -23,45 +38,41 @@ static void	find_collectibles_in_map(t_game *game)
 		x = 0;
 		while (x < game->map.width)
 		{
-			if (game->map.grid[y][x] == 'K'
-				&& game->collectibles.count < MAX_COLLECTIBLES)
-			{
-				game->collectibles.list[game->collectibles.count].x = x;
-				game->collectibles.list[game->collectibles.count].y = y;
-				game->collectibles.list[game->collectibles.count].type
-					= ITEM_KEY;
-				game->collectibles.list[game->collectibles.count].collected = 0;
-				game->collectibles.count++;
-				game->map.grid[y][x] = '0';
-			}
+			if (game->map.grid[y][x] == 'K')
+				add_collectible(game, x, y, ITEM_KEY);
+			else if (game->map.grid[y][x] == 'A')
+				add_collectible(game, x, y, ITEM_APPLE);
+			else if (game->map.grid[y][x] == 'V')
+				add_collectible(game, x, y, ITEM_EGG);
 			x++;
 		}
 		y++;
 	}
 }
 
+static void	load_img(t_game *game, t_img *img, char *path)
+{
+	img->img = mlx_xpm_file_to_image(game->mlx, path,
+			&img->width, &img->height);
+	if (img->img)
+		img->addr = (int *)mlx_get_data_addr(img->img, &img->pixel_bits,
+				&img->size_line, &img->endian);
+}
+
 static void	load_collectible_textures(t_game *game)
 {
-	game->collectibles.key_tex.img = mlx_xpm_file_to_image(game->mlx,
-			"textures/collectible/key.xpm",
-			&game->collectibles.key_tex.width,
-			&game->collectibles.key_tex.height);
-	if (game->collectibles.key_tex.img)
-		game->collectibles.key_tex.addr = (int *)mlx_get_data_addr(
-				game->collectibles.key_tex.img,
-				&game->collectibles.key_tex.pixel_bits,
-				&game->collectibles.key_tex.size_line,
-				&game->collectibles.key_tex.endian);
-	game->hud.key_icon.img = mlx_xpm_file_to_image(game->mlx,
-			"textures/hud/key_icon.xpm",
-			&game->hud.key_icon.width,
-			&game->hud.key_icon.height);
-	if (game->hud.key_icon.img)
-		game->hud.key_icon.addr = (int *)mlx_get_data_addr(
-				game->hud.key_icon.img,
-				&game->hud.key_icon.pixel_bits,
-				&game->hud.key_icon.size_line,
-				&game->hud.key_icon.endian);
+	load_img(game, &game->collectibles.key_tex,
+		"textures/collectible/key.xpm");
+	load_img(game, &game->collectibles.apple_tex,
+		"textures/collectible/apple.xpm");
+	load_img(game, &game->collectibles.egg_tex,
+		"textures/collectible/egg.xpm");
+	load_img(game, &game->hud.key_icon,
+		"textures/hud/key_icon.xpm");
+	load_img(game, &game->hud.apple_icon,
+		"textures/hud/apple_icon.xpm");
+	load_img(game, &game->hud.egg_icon,
+		"textures/hud/egg_icon.xpm");
 }
 
 void	init_collectibles(t_game *game)
@@ -84,8 +95,16 @@ void	free_collectibles(t_game *game)
 {
 	if (game->collectibles.key_tex.img)
 		mlx_destroy_image(game->mlx, game->collectibles.key_tex.img);
+	if (game->collectibles.apple_tex.img)
+		mlx_destroy_image(game->mlx, game->collectibles.apple_tex.img);
+	if (game->collectibles.egg_tex.img)
+		mlx_destroy_image(game->mlx, game->collectibles.egg_tex.img);
 	if (game->hud.key_icon.img)
 		mlx_destroy_image(game->mlx, game->hud.key_icon.img);
+	if (game->hud.apple_icon.img)
+		mlx_destroy_image(game->mlx, game->hud.apple_icon.img);
+	if (game->hud.egg_icon.img)
+		mlx_destroy_image(game->mlx, game->hud.egg_icon.img);
 }
 
 int	add_item_to_inventory(t_game *game, int item_type)
@@ -118,21 +137,38 @@ int	has_item_selected(t_game *game, int item_type)
 	return (1);
 }
 
+static void	consume_slot(t_game *game, int slot)
+{
+	game->hud.inventory[slot] = ITEM_NONE;
+	game->hud.key_uses[slot] = 0;
+}
+
 void	use_selected_item(t_game *game)
 {
 	int	slot;
+	int	item;
 
 	slot = game->hud.slot;
 	if (slot < 0 || slot >= HOTBAR_SLOTS)
 		return ;
-	if (game->hud.inventory[slot] == ITEM_KEY)
+	item = game->hud.inventory[slot];
+	if (item == ITEM_KEY)
 	{
 		game->hud.key_uses[slot]--;
 		if (game->hud.key_uses[slot] <= 0)
-		{
-			game->hud.inventory[slot] = ITEM_NONE;
-			game->hud.key_uses[slot] = 0;
-		}
+			consume_slot(game, slot);
+	}
+	else if (item == ITEM_APPLE)
+	{
+		game->hud.health += APPLE_HP;
+		if (game->hud.health > 20)
+			game->hud.health = 20;
+		consume_slot(game, slot);
+	}
+	else if (item == ITEM_EGG)
+	{
+		consume_slot(game, slot);
+		trigger_victory(game);
 	}
 }
 

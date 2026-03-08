@@ -6,7 +6,7 @@
 /*   By: amacaull <amacaull@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/30 15:16:09 by amacaull          #+#    #+#             */
-/*   Updated: 2026/02/06 15:42:09 by amacaull         ###   ########.fr       */
+/*   Updated: 2026/03/08 13:58:31 by amacaull         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,8 +40,10 @@ void	init_hud(t_game *game)
 	load_hud_asset(game, &game->hud.heart_empty, "textures/hud/heart_empty.xpm");
 	load_hud_asset(game, &game->hud.food_full, "textures/hud/food_full.xpm");
 	load_hud_asset(game, &game->hud.food_empty, "textures/hud/food_empty.xpm");
-	load_hud_asset(game, &game->hud.hand_empty, "textures/hud/no_pickaxe.xpm");
+	load_hud_asset(game, &game->hud.hand_empty, "textures/hud/empty_hand.xpm");
 	load_hud_asset(game, &game->hud.hand_pickaxe, "textures/hud/pickaxe.xpm");
+	load_hud_asset(game, &game->hud.hand_apple, "textures/hud/hand_apple.xpm");
+	load_hud_asset(game, &game->hud.hand_egg, "textures/hud/hand_egg.xpm");
 }
 
 static void	draw_scaled_pixel(t_game *game, int x, int y, int color)
@@ -123,6 +125,10 @@ static void	draw_hand(t_game *game)
 	current_item = game->hud.inventory[game->hud.slot];
 	if (current_item == ITEM_KEY)
 		hand = &game->hud.hand_pickaxe;
+	else if (current_item == ITEM_APPLE)
+		hand = &game->hud.hand_apple;
+	else if (current_item == ITEM_EGG)
+		hand = &game->hud.hand_egg;
 	else
 		hand = &game->hud.hand_empty;
 	if (!hand->img)
@@ -207,20 +213,36 @@ static void	draw_icon_in_slot(t_game *game, t_img *icon, int slot_x, int slot_y)
 	}
 }
 
+static t_img	*get_slot_icon(t_game *game, int slot)
+{
+	int	item;
+
+	item = game->hud.inventory[slot];
+	if (item == ITEM_KEY)
+		return (&game->hud.key_icon);
+	if (item == ITEM_APPLE)
+		return (&game->hud.apple_icon);
+	if (item == ITEM_EGG)
+		return (&game->hud.egg_icon);
+	return (NULL);
+}
+
 static void	render_inventory(t_game *game, int hotbar_x, int hotbar_y)
 {
-	int	i;
-	int	slot_x;
-	int	slot_y;
+	int		i;
+	int		slot_x;
+	int		slot_y;
+	t_img	*icon;
 
 	i = 0;
 	while (i < HOTBAR_SLOTS)
 	{
-		if (game->hud.inventory[i] == ITEM_KEY && game->hud.key_icon.img)
+		icon = get_slot_icon(game, i);
+		if (icon)
 		{
 			slot_x = hotbar_x + (3 * HUD_SCALE) + (i * 20 * HUD_SCALE);
 			slot_y = hotbar_y + (3 * HUD_SCALE);
-			draw_icon_in_slot(game, &game->hud.key_icon, slot_x, slot_y);
+			draw_icon_in_slot(game, icon, slot_x, slot_y);
 		}
 		i++;
 	}
@@ -274,4 +296,8 @@ void	free_hud(t_game *game)
 		mlx_destroy_image(game->mlx, game->hud.hand_empty.img);
 	if (game->hud.hand_pickaxe.img)
 		mlx_destroy_image(game->mlx, game->hud.hand_pickaxe.img);
+	if (game->hud.hand_apple.img)
+		mlx_destroy_image(game->mlx, game->hud.hand_apple.img);
+	if (game->hud.hand_egg.img)
+		mlx_destroy_image(game->mlx, game->hud.hand_egg.img);
 }

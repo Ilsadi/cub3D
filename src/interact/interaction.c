@@ -6,7 +6,7 @@
 /*   By: amacaull <amacaull@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/03 19:00:55 by amacaull          #+#    #+#             */
-/*   Updated: 2026/02/07 10:57:38 by amacaull         ###   ########.fr       */
+/*   Updated: 2026/03/08 13:58:44 by amacaull         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,12 +43,31 @@ static void	interact_with_door(t_game *game, t_door *door)
 	}
 }
 
+static int	handle_item_use(t_game *game)
+{
+	int	slot;
+	int	item;
+
+	slot = game->hud.slot;
+	if (slot < 0 || slot >= HOTBAR_SLOTS)
+		return (0);
+	item = game->hud.inventory[slot];
+	if (item == ITEM_APPLE || item == ITEM_EGG)
+	{
+		use_selected_item(game);
+		return (1);
+	}
+	return (0);
+}
+
 void	handle_interaction(t_game *game)
 {
 	int		target_x;
 	int		target_y;
 	t_door	*door;
 
+	if (handle_item_use(game))
+		return ;
 	if (!get_facing_cell(game, &target_x, &target_y))
 		return ;
 	if (game->map.grid[target_y][target_x] == 'D')

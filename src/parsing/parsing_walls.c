@@ -6,7 +6,7 @@
 /*   By: amacaull <amacaull@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/27 03:59:44 by amacaull          #+#    #+#             */
-/*   Updated: 2026/02/06 13:56:44 by amacaull         ###   ########.fr       */
+/*   Updated: 2026/03/08 14:07:27 by amacaull         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,9 +62,29 @@ int	normalize_map(t_game *game)
 
 static int	is_blocking_tile(char c)
 {
-	if (c == '1' || c == '2' || c == 'V' || c == 'D')
+	if (c == '1' || c == '2' || c == 'D')
 		return (1);
 	return (0);
+}
+
+static int	is_visited(char c)
+{
+	if (c == 'f' || c == 'k' || c == 'm' || c == 'a' || c == 'g')
+		return (1);
+	return (0);
+}
+
+static char	get_visited_marker(char c)
+{
+	if (c == 'K')
+		return ('k');
+	if (c == 'M')
+		return ('m');
+	if (c == 'A')
+		return ('a');
+	if (c == 'V')
+		return ('g');
+	return ('f');
 }
 
 static int	flood_fill(char **map, int x, int y, t_game *game)
@@ -78,14 +98,9 @@ static int	flood_fill(char **map, int x, int y, t_game *game)
 		return (0);
 	if (is_blocking_tile(c))
 		return (1);
-	if (c == 'V' || c == 'v' || c == 'm')
+	if (is_visited(c))
 		return (1);
-	if (c == 'K')
-		map[y][x] = 'v';
-	else if (c == 'M')
-		map[y][x] = 'm';
-	else
-		map[y][x] = 'V';
+	map[y][x] = get_visited_marker(c);
 	if (!flood_fill(map, x + 1, y, game))
 		return (0);
 	if (!flood_fill(map, x - 1, y, game))
@@ -108,12 +123,16 @@ static void	restore_visited(t_game *game)
 		x = -1;
 		while (++x < game->map.width)
 		{
-			if (game->map.grid[y][x] == 'V')
+			if (game->map.grid[y][x] == 'f')
 				game->map.grid[y][x] = '0';
-			else if (game->map.grid[y][x] == 'v')
+			else if (game->map.grid[y][x] == 'k')
 				game->map.grid[y][x] = 'K';
 			else if (game->map.grid[y][x] == 'm')
 				game->map.grid[y][x] = 'M';
+			else if (game->map.grid[y][x] == 'a')
+				game->map.grid[y][x] = 'A';
+			else if (game->map.grid[y][x] == 'g')
+				game->map.grid[y][x] = 'V';
 		}
 	}
 }

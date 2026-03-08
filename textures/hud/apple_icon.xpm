@@ -1,0 +1,32 @@
+/* XPM */
+static char *apple_icon[] = {
+/* columns rows colors chars-per-pixel */
+"16 16 10 1 ",
+"  c None",
+". c #541209",
+"X c #542409",
+"o c #752802",
+"O c #B26411",
+"+ c #DBA213",
+"@ c #ECCB45",
+"# c #EAEE57",
+"$ c #F6F892",
+"% c #FEFFE6",
+/* pixels */
+"                ",
+"         o      ",
+"        OX      ",
+"        o       ",
+"     OOoXoo     ",
+"   O+%+XO@+oo   ",
+"  O+#$%%%$#+oo  ",
+"  O+######@#+o  ",
+"  O+@#@#@@@#@.  ",
+"  o++@@++@+#@.  ",
+"  o+++++@++#+.  ",
+"   o++@+++@+.   ",
+"   oO+++@@+O.   ",
+"    .O+OO+O.    ",
+"     .ooo..     ",
+"                "
+};
