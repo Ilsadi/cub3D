@@ -6,14 +6,14 @@
 /*   By: amacaull <amacaull@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/06 08:59:58 by amacaull          #+#    #+#             */
-/*   Updated: 2026/02/07 16:11:55 by amacaull         ###   ########.fr       */
+/*   Updated: 2026/03/08 18:59:09 by amacaull         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "cub3d.h"
 
-static void	calc_ender_transform(t_game *game, t_sprite_render *sr,
-	t_enderman *ender)
+static void	calc_ender_transform(t_game *game,
+	t_sprite_render *sr, t_enderman *ender)
 {
 	double	sprite_x;
 	double	sprite_y;
@@ -28,10 +28,13 @@ static void	calc_ender_transform(t_game *game, t_sprite_render *sr,
 			- game->ray.dir_x * sprite_y);
 	sr->transform_y = inv_det * (-game->ray.plane_y * sprite_x
 			+ game->ray.plane_x * sprite_y);
-	sr->screen_x = (int)((WIDTH / 2) * (1 + sr->transform_x / sr->transform_y));
+	sr->screen_x = (int)((WIDTH / 2)
+			* (1 + sr->transform_x / sr->transform_y));
 	sprite_scale = 1;
-	sr->height = abs((int)(HEIGHT / sr->transform_y * sprite_scale));
-	sr->width = abs((int)(HEIGHT / sr->transform_y * sprite_scale * 0.5));
+	sr->height = abs((int)(HEIGHT / sr->transform_y
+				* sprite_scale));
+	sr->width = abs((int)(HEIGHT / sr->transform_y
+				* sprite_scale * 0.5));
 }
 
 static void	calc_ender_bounds(t_game *game, t_sprite_render *sr)
@@ -41,13 +44,13 @@ static void	calc_ender_bounds(t_game *game, t_sprite_render *sr)
 
 	v_move = 0.02;
 	v_move_screen = (int)(v_move * HEIGHT / sr->transform_y);
-	sr->orig_start_y = -sr->height / 2 + HEIGHT / 2 + game->player.pitch
-		+ v_move_screen;
+	sr->orig_start_y = -sr->height / 2 + HEIGHT / 2
+		+ game->player.pitch + v_move_screen;
 	sr->draw_start_y = sr->orig_start_y;
 	if (sr->draw_start_y < 0)
 		sr->draw_start_y = 0;
-	sr->draw_end_y = sr->height / 2 + HEIGHT / 2 + game->player.pitch
-		+ v_move_screen;
+	sr->draw_end_y = sr->height / 2 + HEIGHT / 2
+		+ game->player.pitch + v_move_screen;
 	if (sr->draw_end_y >= HEIGHT)
 		sr->draw_end_y = HEIGHT - 1;
 	sr->draw_start_x = -sr->width / 2 + sr->screen_x;
@@ -68,9 +71,7 @@ static void	draw_ender_column(t_game *game, t_sprite_render *sr,
 
 	tex_x = (int)(256 * (x - (-sr->width / 2 + sr->screen_x))
 			* tex->width / sr->width) / 256;
-	if (tex_x < 0 || tex_x >= tex->width)
-		return ;
-	if (sr->height <= 0)
+	if (tex_x < 0 || tex_x >= tex->width || sr->height <= 0)
 		return ;
 	y = sr->draw_start_y;
 	while (y < sr->draw_end_y)
@@ -89,8 +90,8 @@ static void	draw_ender_column(t_game *game, t_sprite_render *sr,
 	}
 }
 
-static void	render_single_enderman(t_game *game, t_enderman *ender,
-	double *z_buffer)
+static void	render_single_enderman(t_game *game,
+	t_enderman *ender, double *z_buffer)
 {
 	t_sprite_render	sr;
 	int				x;
@@ -111,51 +112,23 @@ static void	render_single_enderman(t_game *game, t_enderman *ender,
 	x = sr.draw_start_x;
 	while (x < sr.draw_end_x)
 	{
-		if (x >= 0 && x < WIDTH && sr.transform_y < z_buffer[x])
+		if (x >= 0 && x < WIDTH
+			&& sr.transform_y < z_buffer[x])
 			draw_ender_column(game, &sr, x, tex);
 		x++;
 	}
 }
 
-static void	sort_endermen(t_game *game)
-{
-	int			i;
-	int			j;
-	double		dist_i;
-	double		dist_j;
-	t_enderman	tmp;
-
-	i = 0;
-	while (i < game->endermen.count - 1)
-	{
-		j = i + 1;
-		while (j < game->endermen.count)
-		{
-			dist_i = pow(game->endermen.list[i].x - game->player.x, 2)
-				+ pow(game->endermen.list[i].y - game->player.y, 2);
-			dist_j = pow(game->endermen.list[j].x - game->player.x, 2)
-				+ pow(game->endermen.list[j].y - game->player.y, 2);
-			if (dist_j > dist_i)
-			{
-				tmp = game->endermen.list[i];
-				game->endermen.list[i] = game->endermen.list[j];
-				game->endermen.list[j] = tmp;
-			}
-			j++;
-		}
-		i++;
-	}
-}
-
-void	render_endermen(t_game *game, double *z_buffer)
+void	render_enderman(t_game *game, double *z_buffer)
 {
 	int	i;
 
-	sort_endermen(game);
+	sort_enderman(game);
 	i = 0;
 	while (i < game->endermen.count)
 	{
-		render_single_enderman(game, &game->endermen.list[i], z_buffer);
+		render_single_enderman(game,
+			&game->endermen.list[i], z_buffer);
 		i++;
 	}
 }

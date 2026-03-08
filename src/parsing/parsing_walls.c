@@ -5,8 +5,8 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: amacaull <amacaull@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2026/01/27 03:59:44 by amacaull          #+#    #+#             */
-/*   Updated: 2026/03/08 14:07:27 by amacaull         ###   ########.fr       */
+/*   Created: 2026/01/27 03:59:44 by ilsadi            #+#    #+#             */
+/*   Updated: 2026/03/08 19:15:23 by amacaull         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,9 +42,11 @@ int	normalize_map(t_game *game)
 	char	**new_grid;
 	int		i;
 
-	if (!game->map.grid || game->map.width <= 0 || game->map.height <= 0)
+	if (!game->map.grid || game->map.width <= 0
+		|| game->map.height <= 0)
 		return (0);
-	new_grid = malloc(sizeof(char *) * (game->map.height + 1));
+	new_grid = malloc(sizeof(char *)
+			* (game->map.height + 1));
 	if (!new_grid)
 		return (0);
 	i = -1;
@@ -57,58 +59,6 @@ int	normalize_map(t_game *game)
 	new_grid[i] = NULL;
 	ft_free_tab(game->map.grid);
 	game->map.grid = new_grid;
-	return (1);
-}
-
-static int	is_blocking_tile(char c)
-{
-	if (c == '1' || c == '2' || c == 'D')
-		return (1);
-	return (0);
-}
-
-static int	is_visited(char c)
-{
-	if (c == 'f' || c == 'k' || c == 'm' || c == 'a' || c == 'g')
-		return (1);
-	return (0);
-}
-
-static char	get_visited_marker(char c)
-{
-	if (c == 'K')
-		return ('k');
-	if (c == 'M')
-		return ('m');
-	if (c == 'A')
-		return ('a');
-	if (c == 'V')
-		return ('g');
-	return ('f');
-}
-
-static int	flood_fill(char **map, int x, int y, t_game *game)
-{
-	char	c;
-
-	if (x < 0 || y < 0 || x >= game->map.width || y >= game->map.height)
-		return (0);
-	c = map[y][x];
-	if (c == ' ')
-		return (0);
-	if (is_blocking_tile(c))
-		return (1);
-	if (is_visited(c))
-		return (1);
-	map[y][x] = get_visited_marker(c);
-	if (!flood_fill(map, x + 1, y, game))
-		return (0);
-	if (!flood_fill(map, x - 1, y, game))
-		return (0);
-	if (!flood_fill(map, x, y + 1, game))
-		return (0);
-	if (!flood_fill(map, x, y - 1, game))
-		return (0);
 	return (1);
 }
 
@@ -145,7 +95,8 @@ int	check_map_closed(t_game *game)
 
 	start_x = (int)game->player.x;
 	start_y = (int)game->player.y;
-	result = flood_fill(game->map.grid, start_x, start_y, game);
+	result = flood_fill(game->map.grid,
+			start_x, start_y, game);
 	restore_visited(game);
 	return (result);
 }

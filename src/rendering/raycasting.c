@@ -6,7 +6,7 @@
 /*   By: amacaull <amacaull@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/27 12:03:57 by amacaull          #+#    #+#             */
-/*   Updated: 2026/02/06 13:57:33 by amacaull         ###   ########.fr       */
+/*   Updated: 2026/03/08 18:58:57 by amacaull         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -104,5 +104,5 @@ void	render_frame(t_game *game)
 		x++;
 	}
 	render_sprites(game, z_buffer);
-	render_endermen(game, z_buffer);
+	render_enderman(game, z_buffer);
 }

@@ -6,7 +6,7 @@
 /*   By: amacaull <amacaull@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/07 13:15:35 by ilsadi            #+#    #+#             */
-/*   Updated: 2026/03/08 14:33:30 by amacaull         ###   ########.fr       */
+/*   Updated: 2026/03/08 19:05:20 by amacaull         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,7 +39,7 @@
 // MOUSE
 # define MOUSE_SENSITIVITY 0.001
 
-// RENDER & SHADING
+// SHADING
 # define MAX_VIEW_DIST 3.5
 
 // ANIMATION
@@ -400,7 +400,7 @@ void	free_animations(t_game *game);
 void	render_floor_ceiling(t_game *game);
 int		apply_shading(int color, double distance);
 
-// SPRITES (Billboarding)
+// SPRITES
 void	render_sprites(t_game *game, double *z_buffer);
 
 // UI
@@ -442,16 +442,32 @@ void	use_selected_item(t_game *game);
 // INTERACTION
 void	handle_interaction(t_game *game);
 
-// ENDERMEN
-void	init_endermen(t_game *game);
-void	update_endermen(t_game *game);
-void	render_endermen(t_game *game, double *z_buffer);
-void	free_endermen(t_game *game);
+// ENDERMAN
+void	init_enderman(t_game *game);
+void	update_enderman(t_game *game);
+void	render_enderman(t_game *game, double *z_buffer);
+void	free_enderman(t_game *game);
+void	teleport_enderman(t_game *game, t_enderman *ender);
+void	sort_enderman(t_game *game);
 
 // GAME STATE
 void	check_gameover(t_game *game);
 void	render_gameover(t_game *game);
 void	trigger_victory(t_game *game);
 void	render_victory(t_game *game);
+void	draw_letter_pixel(t_game *game, int x, int y, int color);
+void	draw_char_g(t_game *game, int x, int y, int c);
+void	draw_char_a(t_game *game, int x, int y, int c);
+void	draw_char_m(t_game *game, int x, int y, int c);
+void	draw_char_e(t_game *game, int x, int y, int c);
+void	draw_char_o(t_game *game, int x, int y, int c);
+void	draw_char_v(t_game *game, int x, int y, int c);
+void	draw_char_r(t_game *game, int x, int y, int c);
+void	draw_char_i(t_game *game, int x, int y, int c);
+void	draw_char_c(t_game *game, int x, int y, int c);
+void	draw_char_t(t_game *game, int x, int y, int c);
+void	draw_char_y(t_game *game, int x, int y, int c);
+void	draw_game_over_text(t_game *game);
+void	draw_victory_text(t_game *game);
 
 #endif

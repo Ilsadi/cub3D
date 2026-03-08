@@ -6,7 +6,7 @@
 /*   By: amacaull <amacaull@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/28 10:15:46 by amacaull          #+#    #+#             */
-/*   Updated: 2026/03/08 13:59:25 by amacaull         ###   ########.fr       */
+/*   Updated: 2026/03/08 18:58:50 by amacaull         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,7 +26,7 @@ int	game_loop(t_game *game)
 	update_metabolism(game);
 	update_animation(game);
 	update_collectibles(game);
-	update_endermen(game);
+	update_enderman(game);
 	check_gameover(game);
 	if (game->tex.use_floor_tex || game->tex.use_ceil_tex)
 		render_floor_ceiling(game);

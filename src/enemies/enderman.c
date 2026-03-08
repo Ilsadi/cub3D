@@ -6,80 +6,11 @@
 /*   By: amacaull <amacaull@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/06 08:59:27 by amacaull          #+#    #+#             */
-/*   Updated: 2026/02/07 11:11:28 by amacaull         ###   ########.fr       */
+/*   Updated: 2026/03/08 18:58:50 by amacaull         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "cub3d.h"
-
-static int	is_valid_tp_pos(t_game *game, int x, int y)
-{
-	if (x < 0 || y < 0 || x >= game->map.width || y >= game->map.height)
-		return (0);
-	if (game->map.grid[y][x] != '0' && game->map.grid[y][x] != 'M'
-		&& game->map.grid[y][x] != 'K')
-		return (0);
-	return (1);
-}
-
-static int	has_clear_path(t_game *game, double x1, double y1, double x2, double y2)
-{
-	double	dx;
-	double	dy;
-	double	dist;
-	int		steps;
-	int		i;
-
-	dx = x2 - x1;
-	dy = y2 - y1;
-	dist = sqrt(dx * dx + dy * dy);
-	steps = (int)(dist * 4);
-	if (steps < 1)
-		steps = 1;
-	i = 0;
-	while (i <= steps)
-	{
-		dx = x1 + (x2 - x1) * i / steps;
-		dy = y1 + (y2 - y1) * i / steps;
-		if (game->map.grid[(int)dy][(int)dx] == '1'
-			|| game->map.grid[(int)dy][(int)dx] == 'D')
-			return (0);
-		i++;
-	}
-	return (1);
-}
-
-static void	teleport_enderman(t_game *game, t_enderman *ender)
-{
-	int		range;
-	int		attempts;
-	int		new_x;
-	int		new_y;
-	double	dist;
-
-	if (ender->is_angry)
-		range = ENDER_RANGE_ANGRY;
-	else
-		range = ENDER_RANGE_NORMAL;
-	attempts = 50;
-	while (attempts-- > 0)
-	{
-		new_x = (int)ender->x + (rand() % (range * 2 + 1)) - range;
-		new_y = (int)ender->y + (rand() % (range * 2 + 1)) - range;
-		if (is_valid_tp_pos(game, new_x, new_y))
-		{
-			dist = sqrt(pow(new_x - ender->x, 2) + pow(new_y - ender->y, 2));
-			if (dist <= range && dist > 0.5
-				&& has_clear_path(game, ender->x, ender->y,
-					new_x + 0.5, new_y + 0.5))
-			{
-				ender->x = new_x + 0.5;
-				ender->y = new_y + 0.5;
-				return ;
-			}
-		}
-	}
-}
 
 static int	is_looking_at_enderman(t_game *game, t_enderman *ender)
 {
@@ -160,7 +91,7 @@ static void	update_single_enderman(t_game *game, t_enderman *ender)
 	}
 }
 
-void	update_endermen(t_game *game)
+void	update_enderman(t_game *game)
 {
 	int	i;
 
@@ -172,38 +103,4 @@ void	update_endermen(t_game *game)
 		update_single_enderman(game, &game->endermen.list[i]);
 		i++;
 	}
-}
-
-void	init_endermen(t_game *game)
-{
-	game->endermen.texture.img = mlx_xpm_file_to_image(game->mlx,
-			"textures/enemies/enderman.xpm",
-			&game->endermen.texture.width,
-			&game->endermen.texture.height);
-	if (game->endermen.texture.img)
-		game->endermen.texture.addr = (int *)mlx_get_data_addr(
-				game->endermen.texture.img,
-				&game->endermen.texture.pixel_bits,
-				&game->endermen.texture.size_line,
-				&game->endermen.texture.endian);
-	game->endermen.texture_angry.img = mlx_xpm_file_to_image(game->mlx,
-			"textures/enemies/enderman_angry.xpm",
-			&game->endermen.texture_angry.width,
-			&game->endermen.texture_angry.height);
-	if (game->endermen.texture_angry.img)
-		game->endermen.texture_angry.addr = (int *)mlx_get_data_addr(
-				game->endermen.texture_angry.img,
-				&game->endermen.texture_angry.pixel_bits,
-				&game->endermen.texture_angry.size_line,
-				&game->endermen.texture_angry.endian);
-	game->hud.invincibility = 0;
-	srand((unsigned int)time(NULL));
-}
-
-void	free_endermen(t_game *game)
-{
-	if (game->endermen.texture.img)
-		mlx_destroy_image(game->mlx, game->endermen.texture.img);
-	if (game->endermen.texture_angry.img)
-		mlx_destroy_image(game->mlx, game->endermen.texture_angry.img);
 }

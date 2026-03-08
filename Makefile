@@ -6,7 +6,7 @@
 #    By: amacaull <amacaull@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2026/01/22 22:35:31 by ilsadi            #+#    #+#              #
-#    Updated: 2026/02/06 14:01:40 by amacaull         ###   ########.fr        #
+#    Updated: 2026/03/08 19:07:43 by amacaull         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -68,13 +68,21 @@ SRCS        = src/core/main.c \
 			  src/ui/minimap.c \
 			  \
 			  src/interact/door.c \
+			  src/interact/door_utils.c \
 			  src/interact/collectible.c \
+			  src/interact/collectible_items.c \
+			  src/interact/collectible_update.c \
 			  src/interact/interaction.c \
 			  \
 			  src/enemies/enderman.c \
+			  src/enemies/enderman_tp.c \
+			  src/enemies/enderman_init.c \
 			  src/enemies/enderman_render.c \
 			  \
-			  src/game/gameover.c
+			  src/game/gameover.c \
+			  src/game/gameover_letter.c \
+			  src/game/gameover_letter2.c \
+			  src/game/gameover_text.c
 
 OBJS        = $(SRCS:%.c=$(OBJ_DIR)/%.o)
 

@@ -6,7 +6,7 @@
 /*   By: amacaull <amacaull@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/06 08:09:34 by amacaull          #+#    #+#             */
-/*   Updated: 2026/03/08 14:34:32 by amacaull         ###   ########.fr       */
+/*   Updated: 2026/03/08 14:40:26 by amacaull         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,7 +37,6 @@ static void	calc_sprite_bounds(t_sprite_render *sr, int pitch,
 {
 	int	v_screen;
 
-	/* offset world-space mis à l'échelle par la distance → indépendant de la taille */
 	v_screen = (int)(vground * HEIGHT / transform_y);
 	sr->orig_start_y = -sr->height / 2 + HEIGHT / 2 + pitch + v_screen;
 	sr->draw_start_y = sr->orig_start_y;
