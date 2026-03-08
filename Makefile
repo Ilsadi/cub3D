@@ -6,7 +6,7 @@
 #    By: amacaull <amacaull@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2026/01/22 22:35:31 by ilsadi            #+#    #+#              #
-#    Updated: 2026/03/08 19:07:43 by amacaull         ###   ########.fr        #
+#    Updated: 2026/03/08 19:17:01 by amacaull         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -48,8 +48,11 @@ SRCS        = src/core/main.c \
 			  src/parsing/parsing.c \
 			  src/parsing/parsing_config.c \
 			  src/parsing/parsing_validate.c \
+			  src/parsing/parsing_player.c \
 			  src/parsing/parsing_walls.c \
+			  src/parsing/parsing_flood.c \
 			  src/parsing/parsing_utils.c \
+			  src/parsing/parsing_mapline.c \
 			  src/parsing/color.c \
 			  \
 			  src/player/move.c \

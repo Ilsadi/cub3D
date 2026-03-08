@@ -6,7 +6,7 @@
 /*   By: amacaull <amacaull@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/07 13:15:35 by ilsadi            #+#    #+#             */
-/*   Updated: 2026/03/08 19:05:20 by amacaull         ###   ########.fr       */
+/*   Updated: 2026/03/08 19:16:33 by amacaull         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -423,6 +423,8 @@ void	skip_whitespace(char **str);
 int		is_map_line(char *line);
 int		is_blank_line(char *line);
 int		has_cub_extension(char *filename);
+int		find_player(t_game *game);
+int		flood_fill(char **map, int x, int y, t_game *game);
 
 // DOORS
 void	init_doors(t_game *game);
