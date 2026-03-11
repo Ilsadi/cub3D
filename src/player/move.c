@@ -6,7 +6,7 @@
 /*   By: amacaull <amacaull@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/27 12:43:13 by amacaull          #+#    #+#             */
-/*   Updated: 2026/01/30 17:25:18 by amacaull         ###   ########.fr       */
+/*   Updated: 2026/03/10 14:03:49 by amacaull         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,33 +32,39 @@ static void	rotate_player(t_game *game, double rot_speed)
 	game->ray.plane_y = game->ray.dir_x * 0.66;
 }
 
+static void	calc_move(t_game *game, double spd, double *nx,
+	double *ny)
+{
+	*nx = game->player.x;
+	*ny = game->player.y;
+	if (game->keys.w)
+	{
+		*nx += game->ray.dir_x * spd;
+		*ny += game->ray.dir_y * spd;
+	}
+	if (game->keys.s)
+	{
+		*nx -= game->ray.dir_x * spd;
+		*ny -= game->ray.dir_y * spd;
+	}
+	if (game->keys.a)
+	{
+		*nx += game->ray.dir_y * spd;
+		*ny -= game->ray.dir_x * spd;
+	}
+	if (game->keys.d)
+	{
+		*nx -= game->ray.dir_y * spd;
+		*ny += game->ray.dir_x * spd;
+	}
+}
+
 static void	move_player(t_game *game, double move_speed)
 {
 	double	new_x;
 	double	new_y;
 
-	new_x = game->player.x;
-	new_y = game->player.y;
-	if (game->keys.w)
-	{
-		new_x += game->ray.dir_x * move_speed;
-		new_y += game->ray.dir_y * move_speed;
-	}
-	if (game->keys.s)
-	{
-		new_x -= game->ray.dir_x * move_speed;
-		new_y -= game->ray.dir_y * move_speed;
-	}
-	if (game->keys.a)
-	{
-		new_x += game->ray.dir_y * move_speed;
-		new_y -= game->ray.dir_x * move_speed;
-	}
-	if (game->keys.d)
-	{
-		new_x -= game->ray.dir_y * move_speed;
-		new_y += game->ray.dir_x * move_speed;
-	}
+	calc_move(game, move_speed, &new_x, &new_y);
 	if (!is_wall(game, new_x, game->player.y))
 		game->player.x = new_x;
 	if (!is_wall(game, game->player.x, new_y))

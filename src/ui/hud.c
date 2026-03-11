@@ -6,22 +6,50 @@
 /*   By: amacaull <amacaull@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/30 15:16:09 by amacaull          #+#    #+#             */
-/*   Updated: 2026/03/08 13:58:31 by amacaull         ###   ########.fr       */
+/*   Updated: 2026/03/11 14:11:36 by amacaull         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "cub3d.h"
 
-static void	load_hud_asset(t_game *game, t_img *img, char *path)
+static void	load_hud_asset(t_game *game, t_img *img,
+	char *path)
 {
-	img->img = mlx_xpm_file_to_image(game->mlx, path, &img->width, &img->height);
+	img->img = mlx_xpm_file_to_image(game->mlx, path,
+			&img->width, &img->height);
 	if (!img->img)
-	{
-		printf("Error\nFailed to load HUD texture: %s\n", path);
 		return ;
-	}
-	img->addr = (int *)mlx_get_data_addr(img->img, &img->pixel_bits,
-			&img->size_line, &img->endian);
+	img->addr = (int *)mlx_get_data_addr(img->img,
+			&img->pixel_bits, &img->size_line,
+			&img->endian);
+}
+
+static void	load_hud_textures(t_game *game)
+{
+	load_hud_asset(game, &game->hud.hotbar,
+		"textures/hud/hotbar.xpm");
+	load_hud_asset(game, &game->hud.selector,
+		"textures/hud/selector.xpm");
+	load_hud_asset(game, &game->hud.offhand,
+		"textures/hud/offhand.xpm");
+	load_hud_asset(game, &game->hud.torch,
+		"textures/hud/torch.xpm");
+	load_hud_asset(game, &game->hud.heart_full,
+		"textures/hud/heart_full.xpm");
+	load_hud_asset(game, &game->hud.heart_empty,
+		"textures/hud/heart_empty.xpm");
+	load_hud_asset(game, &game->hud.food_full,
+		"textures/hud/food_full.xpm");
+	load_hud_asset(game, &game->hud.food_empty,
+		"textures/hud/food_empty.xpm");
+	load_hud_asset(game, &game->hud.hand_empty,
+		"textures/hud/empty_hand.xpm");
+	load_hud_asset(game, &game->hud.hand_pickaxe,
+		"textures/hud/pickaxe.xpm");
+	load_hud_asset(game, &game->hud.hand_apple,
+		"textures/hud/hand_apple.xpm");
+	load_hud_asset(game, &game->hud.hand_egg,
+		"textures/hud/hand_egg.xpm");
 }
 
 void	init_hud(t_game *game)
@@ -32,21 +60,11 @@ void	init_hud(t_game *game)
 	game->hud.food_timer = 0;
 	game->hud.no_sprint_timer = 0;
 	game->hud.regen_timer = 0;
-	load_hud_asset(game, &game->hud.hotbar, "textures/hud/hotbar.xpm");
-	load_hud_asset(game, &game->hud.selector, "textures/hud/selector.xpm");
-	load_hud_asset(game, &game->hud.offhand, "textures/hud/offhand.xpm");
-	load_hud_asset(game, &game->hud.torch, "textures/hud/torch.xpm");
-	load_hud_asset(game, &game->hud.heart_full, "textures/hud/heart_full.xpm");
-	load_hud_asset(game, &game->hud.heart_empty, "textures/hud/heart_empty.xpm");
-	load_hud_asset(game, &game->hud.food_full, "textures/hud/food_full.xpm");
-	load_hud_asset(game, &game->hud.food_empty, "textures/hud/food_empty.xpm");
-	load_hud_asset(game, &game->hud.hand_empty, "textures/hud/empty_hand.xpm");
-	load_hud_asset(game, &game->hud.hand_pickaxe, "textures/hud/pickaxe.xpm");
-	load_hud_asset(game, &game->hud.hand_apple, "textures/hud/hand_apple.xpm");
-	load_hud_asset(game, &game->hud.hand_egg, "textures/hud/hand_egg.xpm");
+	load_hud_textures(game);
 }
 
-static void	draw_scaled_pixel(t_game *game, int x, int y, int color)
+void	draw_scaled_pixel(t_game *game, int x,
+	int y, int color)
 {
 	int	i;
 	int	j;
@@ -59,219 +77,14 @@ static void	draw_scaled_pixel(t_game *game, int x, int y, int color)
 		j = 0;
 		while (j < HUD_SCALE)
 		{
-			if (x + j >= 0 && x + j < WIDTH && y + i >= 0 && y + i < HEIGHT)
-				put_pixel(&game->img, x + j, y + i, color);
+			if (x + j >= 0 && x + j < WIDTH
+				&& y + i >= 0 && y + i < HEIGHT)
+				put_pixel(&game->img, x + j,
+					y + i, color);
 			j++;
 		}
 		i++;
 	}
-}
-
-static void	draw_sprite_scaled(t_game *game, t_img *sprite, int start_x,
-	int start_y)
-{
-	int	x;
-	int	y;
-	int	color;
-
-	if (!sprite->img)
-		return ;
-	y = 0;
-	while (y < sprite->height)
-	{
-		x = 0;
-		while (x < sprite->width)
-		{
-			color = sprite->addr[y * sprite->width + x];
-			draw_scaled_pixel(game, start_x + (x * HUD_SCALE),
-				start_y + (y * HUD_SCALE), color);
-			x++;
-		}
-		y++;
-	}
-}
-
-static void	draw_sprite_raw(t_game *game, t_img *sprite, int start_x,
-	int start_y)
-{
-	int	x;
-	int	y;
-	int	color;
-
-	if (!sprite->img)
-		return ;
-	y = 0;
-	while (y < sprite->height)
-	{
-		x = 0;
-		while (x < sprite->width)
-		{
-			color = sprite->addr[y * sprite->width + x];
-			if ((color & 0x00FFFFFF) != 0)
-				put_pixel(&game->img, start_x + x, start_y + y, color);
-			x++;
-		}
-		y++;
-	}
-}
-
-static void	draw_hand(t_game *game)
-{
-	t_img	*hand;
-	int		current_item;
-	int		x;
-	int		y;
-
-	current_item = game->hud.inventory[game->hud.slot];
-	if (current_item == ITEM_KEY)
-		hand = &game->hud.hand_pickaxe;
-	else if (current_item == ITEM_APPLE)
-		hand = &game->hud.hand_apple;
-	else if (current_item == ITEM_EGG)
-		hand = &game->hud.hand_egg;
-	else
-		hand = &game->hud.hand_empty;
-	if (!hand->img)
-		return ;
-	x = WIDTH - hand->width;
-	y = HEIGHT - hand->height;
-	draw_sprite_raw(game, hand, x, y);
-}
-
-static void	render_stats(t_game *game, int hotbar_x, int y_stats)
-{
-	int	i;
-	int	x;
-	int	spacing;
-	int	hotbar_width;
-
-	spacing = 8 * HUD_SCALE;
-	hotbar_width = 182 * HUD_SCALE;
-	i = 0;
-	while (i < 10)
-	{
-		x = hotbar_x + (i * spacing);
-		if (game->hud.health > (i * 2) + 1)
-			draw_sprite_scaled(game, &game->hud.heart_full, x, y_stats);
-		else
-			draw_sprite_scaled(game, &game->hud.heart_empty, x, y_stats);
-		x = (hotbar_x + hotbar_width) - (9 * HUD_SCALE) - (i * spacing);
-		if (game->hud.food > (i * 2) + 1)
-			draw_sprite_scaled(game, &game->hud.food_full, x, y_stats);
-		else
-			draw_sprite_scaled(game, &game->hud.food_empty, x, y_stats);
-		i++;
-	}
-}
-
-static void	draw_crosshair(t_game *game)
-{
-	int	i;
-	int	c_x;
-	int	c_y;
-	int	color;
-
-	color = 0xDDDDDD;
-	c_x = (WIDTH / 2) - (HUD_SCALE / 2);
-	c_y = (HEIGHT / 2) - (HUD_SCALE / 2);
-	i = -4;
-	while (i <= 4)
-	{
-		draw_scaled_pixel(game, c_x, c_y + (i * HUD_SCALE), color);
-		draw_scaled_pixel(game, c_x + (i * HUD_SCALE), c_y, color);
-		i++;
-	}
-}
-
-static void	draw_icon_in_slot(t_game *game, t_img *icon, int slot_x, int slot_y)
-{
-	int		x;
-	int		y;
-	int		color;
-	int		icon_size;
-	int		slot_size;
-
-	if (!icon->img)
-		return ;
-	slot_size = 16 * HUD_SCALE;
-	icon_size = icon->width * HUD_SCALE;
-	slot_x += (slot_size - icon_size) / 2;
-	slot_y += (slot_size - icon_size) / 2;
-	y = 0;
-	while (y < icon->height)
-	{
-		x = 0;
-		while (x < icon->width)
-		{
-			color = icon->addr[y * icon->width + x];
-			if ((color & 0x00FFFFFF) != 0)
-				draw_scaled_pixel(game, slot_x + x * HUD_SCALE,
-					slot_y + y * HUD_SCALE, color);
-			x++;
-		}
-		y++;
-	}
-}
-
-static t_img	*get_slot_icon(t_game *game, int slot)
-{
-	int	item;
-
-	item = game->hud.inventory[slot];
-	if (item == ITEM_KEY)
-		return (&game->hud.key_icon);
-	if (item == ITEM_APPLE)
-		return (&game->hud.apple_icon);
-	if (item == ITEM_EGG)
-		return (&game->hud.egg_icon);
-	return (NULL);
-}
-
-static void	render_inventory(t_game *game, int hotbar_x, int hotbar_y)
-{
-	int		i;
-	int		slot_x;
-	int		slot_y;
-	t_img	*icon;
-
-	i = 0;
-	while (i < HOTBAR_SLOTS)
-	{
-		icon = get_slot_icon(game, i);
-		if (icon)
-		{
-			slot_x = hotbar_x + (3 * HUD_SCALE) + (i * 20 * HUD_SCALE);
-			slot_y = hotbar_y + (3 * HUD_SCALE);
-			draw_icon_in_slot(game, icon, slot_x, slot_y);
-		}
-		i++;
-	}
-}
-
-void	render_hud(t_game *game)
-{
-	int	hotbar_x;
-	int	hotbar_y;
-	int	hotbar_width;
-	int	offhand_gap;
-
-	hotbar_width = 182 * HUD_SCALE;
-	offhand_gap = 29 * HUD_SCALE;
-	hotbar_x = (WIDTH - hotbar_width) / 2;
-	hotbar_y = HEIGHT - (22 * HUD_SCALE);
-	draw_hand(game);
-	draw_sprite_scaled(game, &game->hud.hotbar, hotbar_x, hotbar_y);
-	draw_sprite_scaled(game, &game->hud.selector,
-		hotbar_x - (1 * HUD_SCALE) + (game->hud.slot * 20 * HUD_SCALE),
-		hotbar_y - (1 * HUD_SCALE));
-	draw_sprite_scaled(game, &game->hud.offhand,
-		hotbar_x - offhand_gap, hotbar_y);
-	draw_sprite_scaled(game, &game->hud.torch,
-		hotbar_x - offhand_gap + (3 * HUD_SCALE),
-		hotbar_y + (3 * HUD_SCALE));
-	render_inventory(game, hotbar_x, hotbar_y);
-	render_stats(game, hotbar_x, hotbar_y - (12 * HUD_SCALE));
-	draw_crosshair(game);
 }
 
 void	free_hud(t_game *game)

@@ -6,7 +6,7 @@
 #    By: amacaull <amacaull@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2026/01/22 22:35:31 by ilsadi            #+#    #+#              #
-#    Updated: 2026/03/08 19:17:01 by amacaull         ###   ########.fr        #
+#    Updated: 2026/03/11 14:13:31 by amacaull         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -66,9 +66,14 @@ SRCS        = src/core/main.c \
 			  src/rendering/background.c \
 			  src/rendering/shading.c \
 			  src/rendering/sprite.c \
+			  src/rendering/sprite_sort.c \
 			  \
 			  src/ui/hud.c \
+			  src/ui/hud_draw.c \
+			  src/ui/hud_render.c \
 			  src/ui/minimap.c \
+			  src/ui/minimap_draw.c \
+			  src/ui/minimap_entities.c \
 			  \
 			  src/interact/door.c \
 			  src/interact/door_utils.c \

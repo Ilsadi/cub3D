@@ -6,7 +6,7 @@
 /*   By: amacaull <amacaull@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/07 13:15:35 by ilsadi            #+#    #+#             */
-/*   Updated: 2026/03/08 19:16:33 by amacaull         ###   ########.fr       */
+/*   Updated: 2026/03/11 14:13:43 by amacaull         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -402,12 +402,34 @@ int		apply_shading(int color, double distance);
 
 // SPRITES
 void	render_sprites(t_game *game, double *z_buffer);
+void	calc_sprite_transform(t_game *game,
+			t_sprite_render *sr, int i, double scale);
+void	calc_sprite_bounds(t_sprite_render *sr, int pitch,
+			double vground, double transform_y);
+void	draw_sprite_column(t_game *game,
+			t_sprite_render *sr, int x, t_img *tex);
+t_img	*get_collectible_tex(t_game *game, int i);
 
 // UI
 void	init_hud(t_game *game);
 void	render_hud(t_game *game);
 void	free_hud(t_game *game);
 void	render_minimap(t_game *game);
+void	draw_scaled_pixel(t_game *game, int x, int y, int color);
+void	draw_sprite_scaled(t_game *game, t_img *sprite,
+			int start_x, int start_y);
+void	draw_sprite_raw(t_game *game, t_img *sprite,
+			int start_x, int start_y);
+void	draw_hand(t_game *game);
+void	render_stats(t_game *game, int hotbar_x, int y_s);
+void	draw_crosshair(t_game *game);
+int		in_mini_circle(int px, int py);
+void	mini_pixel(t_game *game, int sx, int sy, int color);
+int		mini_is_visible(t_game *game, double dx, double dy);
+int		get_tile_color(t_game *game, int x, int y);
+void	fill_mini_bg(t_game *game);
+void	draw_mini_tiles(t_game *game);
+void	draw_mini_dot(t_game *game, double wx, double wy, int color);
 
 // PARSING
 int		parse_cub_file(t_game *game, char *filename);
