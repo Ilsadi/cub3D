@@ -6,7 +6,7 @@
 /*   By: amacaull <amacaull@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/09 15:13:26 by ilsadi            #+#    #+#             */
-/*   Updated: 2026/03/08 18:59:03 by amacaull         ###   ########.fr       */
+/*   Updated: 2026/03/11 16:43:36 by amacaull         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,6 +22,10 @@ static void	free_texture_paths(t_game *game)
 		free(game->tex.we_path);
 	if (game->tex.ea_path)
 		free(game->tex.ea_path);
+	if (game->tex.floor_path)
+		free(game->tex.floor_path);
+	if (game->tex.ceil_path)
+		free(game->tex.ceil_path);
 }
 
 static void	free_texture_images(t_game *game)
@@ -34,6 +38,10 @@ static void	free_texture_images(t_game *game)
 		mlx_destroy_image(game->mlx, game->tex.west.img);
 	if (game->tex.east.img)
 		mlx_destroy_image(game->mlx, game->tex.east.img);
+	if (game->tex.floor_tex.img)
+		mlx_destroy_image(game->mlx, game->tex.floor_tex.img);
+	if (game->tex.ceil_tex.img)
+		mlx_destroy_image(game->mlx, game->tex.ceil_tex.img);
 }
 
 int	clean_everything(t_game *game)
@@ -48,6 +56,8 @@ int	clean_everything(t_game *game)
 	free_texture_images(game);
 	if (game->win)
 		mlx_destroy_window(game->mlx, game->win);
+	mlx_destroy_display(game->mlx);
+	free(game->mlx);
 	free_texture_paths(game);
 	if (game->map.grid)
 		ft_free_tab(game->map.grid);

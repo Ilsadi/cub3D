@@ -6,7 +6,7 @@
 /*   By: amacaull <amacaull@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/30 09:05:30 by amacaull          #+#    #+#             */
-/*   Updated: 2026/01/31 07:05:14 by amacaull         ###   ########.fr       */
+/*   Updated: 2026/03/11 16:25:05 by amacaull         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,10 +44,6 @@ int	handle_mouse(int x, int y, t_game *game)
 		if (game->player.pitch < -HEIGHT)
 			game->player.pitch = -HEIGHT;
 	}
-#ifdef __linux__
 	mlx_mouse_move(game->mlx, game->win, WIDTH / 2, HEIGHT / 2);
-#else
-	mlx_mouse_move(game->win, WIDTH / 2, HEIGHT / 2);
-#endif
 	return (0);
 }

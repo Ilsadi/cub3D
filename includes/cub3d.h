@@ -6,7 +6,7 @@
 /*   By: amacaull <amacaull@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/07 13:15:35 by ilsadi            #+#    #+#             */
-/*   Updated: 2026/03/11 14:13:43 by amacaull         ###   ########.fr       */
+/*   Updated: 2026/03/11 16:31:35 by amacaull         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,6 +21,10 @@
 # include <time.h>
 # include <mlx.h>
 # include "../libft/include/libft_ultimate.h"
+
+#ifndef M_PI
+# define M_PI 3.14159265358979323846
+#endif
 
 // CORE
 # define WIDTH 1280
@@ -96,7 +100,6 @@
 # define VICTORY_DELAY 180
 
 // KEYS
-# ifdef __linux__
 #  define KEY_ESC 65307
 #  define KEY_W 119
 #  define KEY_A 97
@@ -115,26 +118,6 @@
 #  define KEY_7 55
 #  define KEY_8 56
 #  define KEY_9 57
-# else
-#  define KEY_ESC 53
-#  define KEY_W 13
-#  define KEY_A 0
-#  define KEY_S 1
-#  define KEY_D 2
-#  define KEY_LEFT 123
-#  define KEY_RIGHT 124
-#  define KEY_E 14
-#  define KEY_SHIFT 257
-#  define KEY_1 18
-#  define KEY_2 19
-#  define KEY_3 20
-#  define KEY_4 21
-#  define KEY_5 23
-#  define KEY_6 22
-#  define KEY_7 26
-#  define KEY_8 28
-#  define KEY_9 25
-# endif
 
 typedef struct s_img
 {
