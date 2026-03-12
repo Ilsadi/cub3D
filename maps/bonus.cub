@@ -1,0 +1,16 @@
+NO ./textures/test/test_north.xpm
+SO ./textures/test/test_south.xpm
+WE ./textures/test/test_west.xpm
+EA ./textures/test/test_east.xpm
+
+F 50,50,50
+C 30,30,60
+
+222222222222222222
+20K0000020000V0002
+2000000020000000M2
+200A000020M0000002
+2000N000D000000002
+2000000020000AM002
+200K000020K0000002
+222222222222222222

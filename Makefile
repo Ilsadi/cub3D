@@ -6,7 +6,7 @@
 #    By: amacaull <amacaull@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2026/01/22 22:35:31 by ilsadi            #+#    #+#              #
-#    Updated: 2026/03/11 14:13:31 by amacaull         ###   ########.fr        #
+#    Updated: 2026/03/12 11:28:59 by amacaull         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -225,4 +225,6 @@ norm:
 	@printf "    $(C_CYAN)──────────────────────────────────────────$(C_RESET)\n"
 	@echo ""
 
-.PHONY: all clean fclean re norm header footer
+bonus: all
+
+.PHONY: all clean fclean re norm header footer bonus
