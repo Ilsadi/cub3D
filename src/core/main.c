@@ -6,7 +6,7 @@
 /*   By: amacaull <amacaull@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/09 14:37:11 by ilsadi            #+#    #+#             */
-/*   Updated: 2026/03/12 13:48:18 by amacaull         ###   ########.fr       */
+/*   Updated: 2026/03/12 13:56:52 by amacaull         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,6 +72,5 @@ int	main(int ac, char **av)
 	mlx_loop(game.mlx);
 	return (0);
 }
-
 // mlx_mouse_hide(game->mlx, game->win);
 // mlx_mouse_move(game->mlx, game->win, WIDTH / 2, HEIGHT / 2);
