@@ -6,7 +6,7 @@
 /*   By: amacaull <amacaull@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/09 15:13:26 by ilsadi            #+#    #+#             */
-/*   Updated: 2026/03/11 16:43:36 by amacaull         ###   ########.fr       */
+/*   Updated: 2026/03/12 13:47:59 by amacaull         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,23 +44,31 @@ static void	free_texture_images(t_game *game)
 		mlx_destroy_image(game->mlx, game->tex.ceil_tex.img);
 }
 
-int	clean_everything(t_game *game)
+void	free_game_data(t_game *game)
 {
-	if (game->img.img)
-		mlx_destroy_image(game->mlx, game->img.img);
-	free_hud(game);
-	free_animations(game);
-	free_doors(game);
-	free_collectibles(game);
-	free_enderman(game);
-	free_texture_images(game);
-	if (game->win)
-		mlx_destroy_window(game->mlx, game->win);
-	mlx_destroy_display(game->mlx);
-	free(game->mlx);
+	if (game->mlx)
+	{
+		if (game->img.img)
+			mlx_destroy_image(game->mlx, game->img.img);
+		free_hud(game);
+		free_animations(game);
+		free_doors(game);
+		free_collectibles(game);
+		free_enderman(game);
+		free_texture_images(game);
+		if (game->win)
+			mlx_destroy_window(game->mlx, game->win);
+		mlx_destroy_display(game->mlx);
+		free(game->mlx);
+	}
 	free_texture_paths(game);
 	if (game->map.grid)
 		ft_free_tab(game->map.grid);
+}
+
+int	clean_everything(t_game *game)
+{
+	free_game_data(game);
 	exit(0);
 	return (0);
 }

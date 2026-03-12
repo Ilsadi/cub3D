@@ -6,7 +6,7 @@
 /*   By: amacaull <amacaull@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/27 04:00:13 by ilsadi            #+#    #+#             */
-/*   Updated: 2026/03/08 19:15:09 by amacaull         ###   ########.fr       */
+/*   Updated: 2026/03/12 13:51:52 by amacaull         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,8 +33,8 @@ int	is_blank_line(char *line)
 	i = 0;
 	while (line[i])
 	{
-		if (line[i] != ' ' && line[i] != '\t'
-			&& line[i] != '\n' && line[i] != '\r')
+		if (line[i] != ' ' && line[i] != '\t' && line[i] != '\n'
+			&& line[i] != '\r')
 			return (0);
 		i++;
 	}
@@ -50,8 +50,18 @@ int	has_cub_extension(char *filename)
 	len = ft_strlen(filename);
 	if (len <= 4)
 		return (0);
-	return (filename[len - 4] == '.'
-		&& filename[len - 3] == 'c'
-		&& filename[len - 2] == 'u'
-		&& filename[len - 1] == 'b');
+	return (filename[len - 4] == '.' && filename[len - 3] == 'c'
+		&& filename[len - 2] == 'u' && filename[len - 1] == 'b');
+}
+
+void	drain_gnl(int fd)
+{
+	char	*line;
+
+	line = get_next_line(fd);
+	while (line)
+	{
+		free(line);
+		line = get_next_line(fd);
+	}
 }

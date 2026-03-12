@@ -6,7 +6,7 @@
 /*   By: amacaull <amacaull@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/07 13:15:35 by ilsadi            #+#    #+#             */
-/*   Updated: 2026/03/11 16:31:35 by amacaull         ###   ########.fr       */
+/*   Updated: 2026/03/12 13:52:08 by amacaull         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -354,6 +354,7 @@ void	set_img(t_game *game);
 void	put_pixel(t_img *img, int x, int y, int color);
 int		clean_everything(t_game *game);
 void	ft_free_tab(char **tab);
+void	free_game_data(t_game *game);
 
 // INPUT
 void	init_keys(t_game *game);
@@ -430,6 +431,7 @@ int		is_blank_line(char *line);
 int		has_cub_extension(char *filename);
 int		find_player(t_game *game);
 int		flood_fill(char **map, int x, int y, t_game *game);
+void	drain_gnl(int fd);
 
 // DOORS
 void	init_doors(t_game *game);

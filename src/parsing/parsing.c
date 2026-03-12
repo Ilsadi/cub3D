@@ -6,7 +6,7 @@
 /*   By: amacaull <amacaull@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/07 13:14:12 by ilsadi            #+#    #+#             */
-/*   Updated: 2026/01/30 09:23:05 by amacaull         ###   ########.fr       */
+/*   Updated: 2026/03/12 13:51:39 by amacaull         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,7 +65,8 @@ static char	*read_config(t_game *game, int fd)
 	return (NULL);
 }
 
-static int	handle_map_storage(t_game *game, int fd, char *first, char **tmp)
+static int	handle_map_storage(t_game *game, int fd,
+	char *first, char **tmp)
 {
 	char	*line;
 	int		in_map;
@@ -83,7 +84,8 @@ static int	handle_map_storage(t_game *game, int fd, char *first, char **tmp)
 		else if (in_map && is_blank_line(line))
 			in_map = 0;
 		else if (!in_map && !is_blank_line(line))
-			return (free(line), ft_free_tab(tmp),
+			return (free(line), drain_gnl(fd),
+				ft_free_tab(tmp),
 				error_msg("Garbage after map"), 0);
 		free(line);
 		line = get_next_line(fd);
@@ -104,12 +106,12 @@ int	parse_cub_file(t_game *game, char *filename)
 		return (error_msg("Cannot open file"), 0);
 	first_line = read_config(game, fd);
 	if (!first_line)
-		return (close(fd), 0);
+		return (drain_gnl(fd), close(fd), 0);
 	if (!check_config_complete(game))
-		return (free(first_line), close(fd), 0);
-	tmp = malloc(sizeof(char *) * 1024);
+		return (free(first_line), drain_gnl(fd), close(fd), 0);
+	tmp = ft_calloc(1024, sizeof(char *));
 	if (!tmp)
-		return (free(first_line), close(fd), 0);
+		return (free(first_line), drain_gnl(fd), close(fd), 0);
 	if (!handle_map_storage(game, fd, first_line, tmp))
 		return (close(fd), 0);
 	close(fd);

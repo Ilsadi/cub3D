@@ -6,7 +6,7 @@
 /*   By: amacaull <amacaull@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/09 14:37:11 by ilsadi            #+#    #+#             */
-/*   Updated: 2026/03/11 17:21:00 by amacaull         ###   ########.fr       */
+/*   Updated: 2026/03/12 13:48:18 by amacaull         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,11 +55,11 @@ int	main(int ac, char **av)
 		return (1);
 	ft_bzero(&game, sizeof(t_game));
 	if (!parse_cub_file(&game, av[1]))
-		return (1);
+		return (free_game_data(&game), 1);
 	if (!init_mlx(&game))
-		return (1);
+		return (free_game_data(&game), 1);
 	if (!load_textures(&game))
-		return (clean_everything(&game), 1);
+		return (free_game_data(&game), 1);
 	init_keys(&game);
 	init_hud(&game);
 	init_animations(&game);
